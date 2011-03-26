@@ -1,0 +1,24 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{CC5FD16D-436D-48AD-A40C-5A424C6E3E79}") = "hw1_cloud", "hw1_cloud\hw1_cloud.ccproj", "{C0782359-38EE-47A8-9EA4-C066A5EBC22C}"
+EndProject
+Global
+	GlobalSection(SubversionScc) = preSolution
+		Svn-Managed = True
+		Manager = AnkhSVN - Subversion Support for Visual Studio
+	EndGlobalSection
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C0782359-38EE-47A8-9EA4-C066A5EBC22C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C0782359-38EE-47A8-9EA4-C066A5EBC22C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C0782359-38EE-47A8-9EA4-C066A5EBC22C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C0782359-38EE-47A8-9EA4-C066A5EBC22C}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
