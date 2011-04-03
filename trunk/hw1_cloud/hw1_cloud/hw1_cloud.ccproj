@@ -34,6 +34,15 @@
     <ServiceDefinition Include="ServiceDefinition.csdef" />
     <ServiceConfiguration Include="ServiceConfiguration.cscfg" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\CalculatorWebRole\CalculatorWebRole.csproj">
+      <Name>CalculatorWebRole</Name>
+      <Project>{cefa1fdc-5fe4-4f4b-91a5-340af6f50590}</Project>
+      <Private>True</Private>
+      <RoleType>Web</RoleType>
+      <RoleName>CalculatorWebRole</RoleName>
+    </ProjectReference>
+  </ItemGroup>
   <!-- Import the target files for this project template -->
   <PropertyGroup>
     <CloudExtensionsDir Condition=" '$(CloudExtensionsDir)' == '' ">$(MSBuildExtensionsPath)\Microsoft\Cloud Service\1.0\Visual Studio 10.0\</CloudExtensionsDir>
