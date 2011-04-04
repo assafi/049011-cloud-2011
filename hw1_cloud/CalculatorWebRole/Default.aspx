@@ -11,12 +11,12 @@
     </h2>
     <asp:Label ID="teamDetailsLabel" runat="server" Text="Team members:"> </asp:Label> 
     <p>                
-            <b>Assaf Israel, ID XXX</b><br />
+            <b>Assaf Israel, ID 041707530</b><br />
             <b>Oshrit Feder, ID 040832990</b><br />                                             
     </p>
     <p>
     Short bio:<br />
-    Assaf is about to graduate his first degree in Computer Science and start MSc, <br />
+    Assaf has a BSc in Computer Science from the Technion and started his MSc studies, <br />
     Oshrit has a BSc in Computer Science from Tel Aviv university and currently a MBA 2012 Technion candidate<br />
     We both love to eat cookies and this is our first Azure project!
     <br /><br /> Try out our <a href="calculator.aspx">calculator</a>
