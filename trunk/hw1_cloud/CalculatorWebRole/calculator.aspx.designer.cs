@@ -13,13 +13,22 @@ namespace CalculatorWebRole {
     public partial class calculator {
         
         /// <summary>
-        /// form1 control.
+        /// CalculatorForm control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlForm form1;
+        protected global::System.Web.UI.HtmlControls.HtmlForm CalculatorForm;
+        
+        /// <summary>
+        /// lblDisplay control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblDisplay;
         
         /// <summary>
         /// btn1 control.
@@ -49,13 +58,13 @@ namespace CalculatorWebRole {
         protected global::System.Web.UI.WebControls.Button btn3;
         
         /// <summary>
-        /// Button4 control.
+        /// addBtn control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button Button4;
+        protected global::System.Web.UI.WebControls.Button addBtn;
         
         /// <summary>
         /// btn4 control.
@@ -85,13 +94,13 @@ namespace CalculatorWebRole {
         protected global::System.Web.UI.WebControls.Button btn6;
         
         /// <summary>
-        /// Button8 control.
+        /// subBtn control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button Button8;
+        protected global::System.Web.UI.WebControls.Button subBtn;
         
         /// <summary>
         /// btn7 control.
@@ -121,48 +130,75 @@ namespace CalculatorWebRole {
         protected global::System.Web.UI.WebControls.Button btn9;
         
         /// <summary>
-        /// Button12 control.
+        /// multBtn control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button Button12;
+        protected global::System.Web.UI.WebControls.Button multBtn;
         
         /// <summary>
-        /// Button13 control.
+        /// clrBtn control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button Button13;
+        protected global::System.Web.UI.WebControls.Button clrBtn;
         
         /// <summary>
-        /// Button14 control.
+        /// btn0 control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button Button14;
+        protected global::System.Web.UI.WebControls.Button btn0;
         
         /// <summary>
-        /// Button15 control.
+        /// divBtn control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button Button15;
+        protected global::System.Web.UI.WebControls.Button divBtn;
         
         /// <summary>
-        /// Button16 control.
+        /// eqBtn control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button Button16;
+        protected global::System.Web.UI.WebControls.Button eqBtn;
+        
+        /// <summary>
+        /// lOperand control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.HiddenField lOperand;
+        
+        /// <summary>
+        /// rOperand control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.HiddenField rOperand;
+        
+        /// <summary>
+        /// op control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.HiddenField op;
     }
 }
