@@ -5,7 +5,7 @@
     <ConfigurationSettings>
       <Setting name="DiagnosticsConnectionString" value="UseDevelopmentStorage=true" />
       <Setting name="title" value="AOCalculator" />
-      <Setting name="WSAddress" value="http://127.0.0.1:49639/CalculatorService.svc" />
+      <Setting name="WSAddress" value="http://127.0.0.1:49639/CalculatorService.svc?wsdl" />
       <Setting name="Microsoft.WindowsAzure.Plugins.Diagnostics.ConnectionString" value="" />
     </ConfigurationSettings>
   </Role>

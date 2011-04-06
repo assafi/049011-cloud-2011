@@ -23,8 +23,11 @@ namespace CalculatorWebRole
             get
             {
                 //For simplicity, we always return new instance of proxy
-                return System.ServiceModel.ChannelFactory<ICalculator>.CreateChannel(new BasicHttpBinding(BasicHttpSecurityMode.None),
-                                                                                new EndpointAddress(RoleEnvironment.GetConfigurationSettingValue("WSAddress")));
+                BasicHttpBinding binding = new BasicHttpBinding(BasicHttpSecurityMode.None);
+                string wsdlAddress = "http://localhost:49671/CalculationService.svc?wsdl";
+                //string wsdlAddress = RoleEnvironment.GetConfigurationSettingValue("WSAddress");
+                EndpointAddress epAddress = new EndpointAddress(wsdlAddress);
+                return System.ServiceModel.ChannelFactory<ICalculator>.CreateChannel(binding,epAddress);
             }
         }
 
@@ -169,6 +172,7 @@ namespace CalculatorWebRole
             {                
                 if (GetCookieString("op").Equals("add"))
                     lblDisplay.Text = Proxy.add(GetCookieInt("loperand"), GetCookieInt("roperand")).ToString();
+                    
                 Response.Cookies.Remove("op");
                 Response.Cookies.Remove("roperand");
                 Response.Cookies["loperand"].Value = lblDisplay.Text;
