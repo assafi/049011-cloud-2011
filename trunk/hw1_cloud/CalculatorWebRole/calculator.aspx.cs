@@ -85,24 +85,35 @@ namespace CalculatorWebRole
             Response.Cookies[keyName].Value = value;
         }
 
-        protected void subBtn_Click(object sender, EventArgs e)
+
+        private void NumericOperation(string op)
         {
             if (lblDisplay.Text != string.Empty)
             {
-                Response.Cookies["loperand"].Value = lblDisplay.Text;
-                Response.Cookies["op"].Value = "sub";
+                SetCookie("loperand", lblDisplay.Text);
+                SetCookie("op", op);
                 lblDisplay.Text = string.Empty;
             }             
         }
 
+        protected void subBtn_Click(object sender, EventArgs e)
+        {
+            NumericOperation("sub");
+        }
+
         protected void addBtn_Click(object sender, EventArgs e)
         {
-            if (lblDisplay.Text != string.Empty)
-            {
-                Response.Cookies["loperand"].Value = lblDisplay.Text;
-                Response.Cookies["op"].Value = "add";
-                lblDisplay.Text = string.Empty;
-            }
+            NumericOperation("add");
+        }
+
+        protected void mulBtn_Click(object sender, EventArgs e)
+        {
+            NumericOperation("mul");
+        }
+
+        protected void divBtn_Click(object sender, EventArgs e)
+        {
+            NumericOperation("div");
         }
 
         protected void btn2_Click(object sender, EventArgs e)
@@ -168,13 +179,21 @@ namespace CalculatorWebRole
             {                
                 if (GetCookieString("op").Equals("add"))
                     lblDisplay.Text = proxy.add(GetCookieInt("loperand"), GetCookieInt("roperand")).ToString();
-                    
+
+                if (GetCookieString("op").Equals("sub"))
+                    lblDisplay.Text = proxy.sub(GetCookieInt("loperand"), GetCookieInt("roperand")).ToString();
+
+                if (GetCookieString("op").Equals("mul"))
+                    lblDisplay.Text = proxy.mul(GetCookieInt("loperand"), GetCookieInt("roperand")).ToString();
+
+                if (GetCookieString("op").Equals("div"))
+                    lblDisplay.Text = proxy.div(GetCookieInt("loperand"), GetCookieInt("roperand")).ToString();
+
                 Response.Cookies.Remove("op");
                 Response.Cookies.Remove("roperand");
                 Response.Cookies["loperand"].Value = lblDisplay.Text;
             }
             //clear();
         }
-
     }
  }

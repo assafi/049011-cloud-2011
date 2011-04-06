@@ -29,12 +29,14 @@
     <asp:Button ID="btn7" runat="server" Text="7" CssClass="calcBtn" onclick="btn7_Click" />
     <asp:Button ID="btn8" runat="server" Text="8" CssClass="calcBtn" onclick="btn8_Click" />
     <asp:Button ID="btn9" runat="server" Text="9" CssClass="calcBtn" onclick="btn9_Click" />
-    <asp:Button ID="multBtn" runat="server" Text="x" CssClass="calcBtn" />
+    <asp:Button ID="multBtn" runat="server" Text="x" CssClass="calcBtn" 
+        onclick="mulBtn_Click" />
     <br />
     <asp:Button ID="clrBtn" runat="server" Text="clear" BackColor="Silver" 
         Height="35px" style="margin-top: 0px" Width="70px" />
     <asp:Button ID="btn0" runat="server" Text="0" CssClass="calcBtn" onclick="btn0_Click" />
-    <asp:Button ID="divBtn" runat="server" Text="/" CssClass="calcBtn" />
+    <asp:Button ID="divBtn" runat="server" Text="/" CssClass="calcBtn" 
+        onclick="divBtn_Click" />
     <br />
     <asp:Button ID="eqBtn" runat="server" Text="=" BackColor="Silver" 
         Height="35px" Width="140px" onclick="eqBtn_Click" />

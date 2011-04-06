@@ -11,8 +11,16 @@ namespace CalculatorWS
     [ServiceContract]
     public interface ICalculator
     {       
-        // TODO: Add your service operations here
         [OperationContract]
         int add(int lOperand, int rOperand);
+
+        [OperationContract]
+        int sub(int lOperand, int rOperand);
+
+        [OperationContract]
+        int mul(int lOperand, int rOperand);
+
+        [OperationContract]
+        int div(int lOperand, int rOperand);
     }
 }
