@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ServiceConfiguration serviceName="CalculatorFrontend" xmlns="http://schemas.microsoft.com/ServiceHosting/2008/10/ServiceConfiguration" osFamily="1" osVersion="*">
+  <Role name="CalculatorWebRole">
+    <Instances count="1" />
+    <ConfigurationSettings>
+      <Setting name="Microsoft.WindowsAzure.Plugins.Diagnostics.ConnectionString" value="UseDevelopmentStorage=true" />
+      <Setting name="title" value="AOCalculator" />
+      <Setting name="WSAddress" value="http://127.0.0.1:81/CalculationService.svc?wsdl" />
+    </ConfigurationSettings>
+  </Role>
+</ServiceConfiguration>
