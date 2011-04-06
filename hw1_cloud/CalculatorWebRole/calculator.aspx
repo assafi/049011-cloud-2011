@@ -32,12 +32,12 @@
     <asp:Button ID="multBtn" runat="server" Text="x" CssClass="calcBtn" />
     <br />
     <asp:Button ID="clrBtn" runat="server" Text="clear" BackColor="Silver" 
-        Height="35px" style="margin-top: 0px" Width="72px" />
+        Height="35px" style="margin-top: 0px" Width="70px" />
     <asp:Button ID="btn0" runat="server" Text="0" CssClass="calcBtn" onclick="btn0_Click" />
     <asp:Button ID="divBtn" runat="server" Text="/" CssClass="calcBtn" />
     <br />
     <asp:Button ID="eqBtn" runat="server" Text="=" BackColor="Silver" 
-        Height="35px" Width="148px" onclick="eqBtn_Click" />
+        Height="35px" Width="140px" onclick="eqBtn_Click" />
     <asp:HiddenField ID="lOperand" runat="server" />
     <asp:HiddenField ID="rOperand" runat="server" />
     <asp:HiddenField ID="op" runat="server" />
