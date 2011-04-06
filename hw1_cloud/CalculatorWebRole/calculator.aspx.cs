@@ -17,19 +17,7 @@ namespace CalculatorWebRole
          *  Calculator supported operations: number, operator, number, equal.
          *  Punching the buttons in any other order wont work for now.
          */
-
-        private ICalculator Proxy
-        {
-            get
-            {
-                //For simplicity, we always return new instance of proxy
-                BasicHttpBinding binding = new BasicHttpBinding(BasicHttpSecurityMode.None);
-                string wsdlAddress = "http://localhost:49671/CalculationService.svc?wsdl";
-                //string wsdlAddress = RoleEnvironment.GetConfigurationSettingValue("WSAddress");
-                EndpointAddress epAddress = new EndpointAddress(wsdlAddress);
-                return System.ServiceModel.ChannelFactory<ICalculator>.CreateChannel(binding,epAddress);
-            }
-        }
+        private static ICalculator proxy = null;
 
         private const int NOT_SET = -1;
         
@@ -37,7 +25,15 @@ namespace CalculatorWebRole
         private int calculatorState = 0;
 
         protected void Page_Load(object sender, EventArgs e)
-        {                       
+        {
+            if (proxy == null)
+            {
+                BasicHttpBinding binding = new BasicHttpBinding(BasicHttpSecurityMode.None);
+                string wsdlAddress = RoleEnvironment.GetConfigurationSettingValue("WSAddress");
+                EndpointAddress epAddress = new EndpointAddress(wsdlAddress);
+                proxy = System.ServiceModel.ChannelFactory<ICalculator>.CreateChannel(binding, epAddress);
+            }
+
             if (!Page.IsPostBack)
             {
                 // Update result of pervious calculation
@@ -171,7 +167,7 @@ namespace CalculatorWebRole
             if (allSet())
             {                
                 if (GetCookieString("op").Equals("add"))
-                    lblDisplay.Text = Proxy.add(GetCookieInt("loperand"), GetCookieInt("roperand")).ToString();
+                    lblDisplay.Text = proxy.add(GetCookieInt("loperand"), GetCookieInt("roperand")).ToString();
                     
                 Response.Cookies.Remove("op");
                 Response.Cookies.Remove("roperand");
