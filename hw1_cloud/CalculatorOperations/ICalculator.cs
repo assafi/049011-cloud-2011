@@ -12,15 +12,15 @@ namespace CalculatorWS
     public interface ICalculator
     {       
         [OperationContract]
-        int add(int lOperand, int rOperand);
+        double add(double lOperand, double rOperand);
 
         [OperationContract]
-        int sub(int lOperand, int rOperand);
+        double sub(double lOperand, double rOperand);
 
         [OperationContract]
-        int mul(int lOperand, int rOperand);
+        double mul(double lOperand, double rOperand);
 
         [OperationContract]
-        int div(int lOperand, int rOperand);
+        double div(double lOperand, double rOperand);
     }
 }

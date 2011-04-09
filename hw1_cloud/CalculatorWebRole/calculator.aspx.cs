@@ -19,13 +19,9 @@ namespace CalculatorWebRole
          */
         private static ICalculator proxy = null;
 
-        private const int NOT_SET = -1;
-        
-        // state : 0 - loperand, 1 - op, 2 - roperand
-        private int calculatorState = 0;
-
         protected void Page_Load(object sender, EventArgs e)
         {
+
             if (proxy == null)
             {
                 BasicHttpBinding binding = new BasicHttpBinding(BasicHttpSecurityMode.None);
@@ -36,64 +32,77 @@ namespace CalculatorWebRole
 
             if (!Page.IsPostBack)
             {
-                // Update result of pervious calculation
-                //_lOperand = this.GetCookieInt("result");
-                //this.lblDisplay.Text = _lOperand.ToString();
-                this.lblDisplay.Text = string.Empty;    
-            
+                this.lblDisplay.Text = "0";
+                StoreInSession("restart", false);
                 //this.PageTitleLabel.Text = RoleEnvironment.GetConfigurationSettingValue("GameTitle");
-                //this.AgeLabel.Text = this.GetCookieString("Age");
-                //this.PostNewQuestion(this.GetCookieInt("CurrentQuestion"));
-            }                
-            
+            }
+            this.btn0.Enabled = true;
                
         }
 
         protected void parseOperand(int operand)
         {
-            lblDisplay.Text += operand.ToString();
 
-            //int parsedOperand = int.Parse(lblDisplay.Text);
-            if (GetCookieString("op").Equals("Unknown"))
-                Response.Cookies["loperand"].Value = lblDisplay.Text;
+            if ((bool)GetFromSession("restart"))
+            {
+                lblDisplay.Text = "0";
+                StoreInSession("restart",false);
+            }
+
+            string parsedNum = lblDisplay.Text + operand.ToString();
+            lblDisplay.Text = double.Parse(parsedNum).ToString();
+
+            if (GetSessionString("op").Equals("Unknown"))
+                StoreInSession("loperand", double.Parse(lblDisplay.Text));
             else
-                Response.Cookies["roperand"].Value = lblDisplay.Text;
+                StoreInSession("roperand", double.Parse(lblDisplay.Text));
         }
 
-        private string GetCookieString(string keyName)
+        private object GetFromSession(string keyName)
         {
-            if (Request.Cookies[keyName] != null)
+            if (Request.RequestContext.HttpContext.Session[keyName] != null)
             {
-                return Request.Cookies[keyName].Value;
+                return Request.RequestContext.HttpContext.Session[keyName];
+            }
+
+            return null;
+        }
+
+        private string GetSessionString(string keyName)
+        {
+            if (Request.RequestContext.HttpContext.Session[keyName] != null)
+            {
+                return Request.RequestContext.HttpContext.Session[keyName].ToString();
             }
 
             return "Unknown";
         }
 
-        private int GetCookieInt(string keyName)
+        private double GetSessionDouble(string keyName)
         {
-            if (Request.Cookies[keyName] != null)
+            if (Request.RequestContext.HttpContext.Session[keyName] != null)
             {
-                return int.Parse(Request.Cookies[keyName].Value);
+                return (double)Request.RequestContext.HttpContext.Session[keyName];
             }
 
             return 0;
         }
 
-        private void SetCookie(string keyName, string value)
+        private void StoreInSession(string keyName, object value)
         {
-            Response.Cookies[keyName].Value = value;
+            Request.RequestContext.HttpContext.Session.Add(keyName,value);
         }
 
 
         private void NumericOperation(string op)
         {
-            if (lblDisplay.Text != string.Empty)
-            {
-                SetCookie("loperand", lblDisplay.Text);
-                SetCookie("op", op);
-                lblDisplay.Text = string.Empty;
-            }             
+
+            if (!lblDisplay.Text.Equals(string.Empty)) 
+                StoreInSession("loperand", double.Parse(lblDisplay.Text));
+            StoreInSession("op", op);
+            lblDisplay.Text = string.Empty;
+            StoreInSession("restart",false);
+
         }
 
         protected void subBtn_Click(object sender, EventArgs e)
@@ -114,6 +123,7 @@ namespace CalculatorWebRole
         protected void divBtn_Click(object sender, EventArgs e)
         {
             NumericOperation("div");
+            this.btn0.Enabled = false;        
         }
 
         protected void btn2_Click(object sender, EventArgs e)
@@ -168,32 +178,43 @@ namespace CalculatorWebRole
 
         protected bool allSet()
         {
-            return (!GetCookieString("loperand").Equals("Unknown") &&
-                    !GetCookieString("roperand").Equals("Unknown") &&
-                    !GetCookieString("op").Equals("Unknown"));            
+            return (GetFromSession("loperand") != null &&
+                    GetFromSession("roperand") != null &&
+                    GetFromSession("op") != null);            
         }
 
         protected void eqBtn_Click(object sender, EventArgs e)
         {           
             if (allSet())
             {                
-                if (GetCookieString("op").Equals("add"))
-                    lblDisplay.Text = proxy.add(GetCookieInt("loperand"), GetCookieInt("roperand")).ToString();
+                if (GetSessionString("op").Equals("add"))
+                    lblDisplay.Text = proxy.add(GetSessionDouble("loperand"), GetSessionDouble("roperand")).ToString();
 
-                if (GetCookieString("op").Equals("sub"))
-                    lblDisplay.Text = proxy.sub(GetCookieInt("loperand"), GetCookieInt("roperand")).ToString();
+                if (GetSessionString("op").Equals("sub"))
+                    lblDisplay.Text = proxy.sub(GetSessionDouble("loperand"), GetSessionDouble("roperand")).ToString();
 
-                if (GetCookieString("op").Equals("mul"))
-                    lblDisplay.Text = proxy.mul(GetCookieInt("loperand"), GetCookieInt("roperand")).ToString();
+                if (GetSessionString("op").Equals("mul"))
+                    lblDisplay.Text = proxy.mul(GetSessionDouble("loperand"), GetSessionDouble("roperand")).ToString();
 
-                if (GetCookieString("op").Equals("div"))
-                    lblDisplay.Text = proxy.div(GetCookieInt("loperand"), GetCookieInt("roperand")).ToString();
+                if (GetSessionString("op").Equals("div"))
+                    lblDisplay.Text = proxy.div(GetSessionDouble("loperand"), GetSessionDouble("roperand")).ToString();
 
-                Response.Cookies.Remove("op");
-                Response.Cookies.Remove("roperand");
-                Response.Cookies["loperand"].Value = lblDisplay.Text;
+                Request.RequestContext.HttpContext.Session.Remove("op");
+                Request.RequestContext.HttpContext.Session.Remove("roperand");
+                StoreInSession("loperand",double.Parse(lblDisplay.Text));
+                StoreInSession("restart",true);
             }
             //clear();
+        }
+
+        protected void clrBtn_Click(object sender, EventArgs e)
+        {
+            /*
+             * Multiply by 0 to reset the calc
+             */
+            NumericOperation("mul");
+            parseOperand(0);
+            eqBtn_Click(null, null);
         }
     }
  }
