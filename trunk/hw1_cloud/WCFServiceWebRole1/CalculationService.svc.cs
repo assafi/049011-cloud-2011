@@ -10,24 +10,24 @@ namespace CalculatorWS
 {   
     public class CalculatorService : ICalculator
     {
-        public int add(int lOperand, int rOperand)
+        public double add(double lOperand, double rOperand)
         {
             return lOperand + rOperand;
         }
 
-        public int sub(int lOperand, int rOperand)
+        public double sub(double lOperand, double rOperand)
         {
             return lOperand - rOperand;
         }
 
-        public int mul(int lOperand, int rOperand)
+        public double mul(double lOperand, double rOperand)
         {
             return lOperand * rOperand;
         }
 
-        public int div(int lOperand, int rOperand)
+        public double div(double lOperand, double rOperand)
         {
-            if (rOperand == 0)
+            if (double.Equals(rOperand,0))
                 return 0; //This is our convension for dividing by 0
             return lOperand / rOperand;
         }
