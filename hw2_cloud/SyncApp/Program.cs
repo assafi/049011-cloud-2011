@@ -175,7 +175,7 @@ namespace SyncApp
             // Get and create the container
             string machineName = System.Environment.MachineName;
             Console.WriteLine("Machine name: " + machineName);
-            _BlobContainer = _BlobClient.GetContainerReference("tempcontainer3"); //machineName.ToLower());
+            _BlobContainer = _BlobClient.GetContainerReference(machineName.ToLower());
             _BlobContainer.CreateIfNotExist();
 
             // Setup the permissions on the container to be public
