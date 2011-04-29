@@ -5,6 +5,7 @@ using System.Text;
 using System.IO;
 using System.Configuration;
 using System.Threading;
+using System.Data.Services.Client;
 using Microsoft.WindowsAzure;
 using Microsoft.WindowsAzure.ServiceRuntime;
 using Microsoft.WindowsAzure.StorageClient;
@@ -17,6 +18,7 @@ namespace SyncApp
 
         private static CloudBlobClient _BlobClient = null;
         private static CloudBlobContainer _BlobContainer = null;
+        private static SyncLoggerService _LogService = null;
 
         private static string monitoredFolderPath;
 
@@ -37,11 +39,9 @@ namespace SyncApp
 
         private static void sync()
         {
-            int iter = 1;
             DirectoryInfo di = new DirectoryInfo(monitoredFolderPath);
             while (true)
             {
-                Console.WriteLine("Iteration " + iter++);
                 di.Refresh();
                 List<FileEntry> cloudFiles = getCloudFiles();
                 List<FileEntry> localFiles = getLocalFiles(di);
@@ -49,6 +49,15 @@ namespace SyncApp
                 Thread.Sleep(SLEEP_TIME);
             }
         }
+
+/*        private static void printLog()
+        {
+            Console.WriteLine("Log:");
+            foreach (var entry in _LogService.Logs) {
+                Console.WriteLine(entry);
+            }
+        }
+ */ 
 
         private static Dictionary<string, FileEntry> getFilesDicFromList(List<FileEntry> fileList)
         {
@@ -68,7 +77,7 @@ namespace SyncApp
             Dictionary<string, FileEntry> remoteFilesDic = getFilesDicFromList(remoteFiles);
 
             List<FileEntry> addFilesList = new List<FileEntry>();
-            List<Uri> deleteFilesList = new List<Uri>();
+            List<FileEntry> deleteFilesList = new List<FileEntry>();
 
 
             // Files to add / update 
@@ -78,18 +87,14 @@ namespace SyncApp
                 if (remoteFilesDic.TryGetValue(localFile.CloudFileName, out remoteFile))                
                 {
                     // if file had changed - update it
-                    Console.WriteLine("local last modification: " + localFile.Modified.ToLongTimeString());
-                    Console.WriteLine("local remote modification: " + remoteFile.Modified.ToLongTimeString());
-                    //if (remoteFile.Modified.CompareTo(localFile.Modified) <= 0)
-                    DateTime localDate = DateTime.Parse(localFile.Modified.ToLongTimeString());
-                    if (remoteFile.Modified >= localDate)
+                    DateTime localTime = DateTime.Parse(localFile.Modified.ToString());
+                    if (remoteFile.Modified >= localTime)
                     {
-                        Console.WriteLine("Continueing...");
                         continue;
                     }
                         
                     
-                    deleteFilesList.Add(remoteFile.FileUri);
+                    deleteFilesList.Add(remoteFile);
                 }
                 addFilesList.Add(localFile);
             }
@@ -99,7 +104,7 @@ namespace SyncApp
             {                
                 if (!localFilesDic.ContainsKey(remoteFile.CloudFileName))
                 {
-                    deleteFilesList.Add(remoteFile.FileUri);
+                    deleteFilesList.Add(remoteFile);
                 }
             }
 
@@ -115,12 +120,10 @@ namespace SyncApp
 
         private static List<FileEntry> getLocalFiles(DirectoryInfo localDir)
         {
-            Console.WriteLine("Scanning local folder [" + localDir.FullName + "]");
             var filesList = new List<FileEntry>();
             FileInfo[] localFiles = localDir.GetFiles();
             foreach (var file in localFiles)
             {
-                Console.WriteLine("Processing: " + file.FullName);
                 filesList.Add(new FileEntry()
                 {         
                     FileUri = null,
@@ -135,7 +138,6 @@ namespace SyncApp
 
         private static List<FileEntry> getCloudFiles()
         {
-            Console.WriteLine("Getting cloud files...");
             // Get a list of the blobs
             var blobs = _BlobContainer.ListBlobs();
             var filesList = new List<FileEntry>();
@@ -144,10 +146,8 @@ namespace SyncApp
             foreach (var blobItem in blobs)
             {
                 var cloudBlob = _BlobContainer.GetBlobReference(blobItem.Uri.ToString());
-                Console.WriteLine("Blob URI: " + blobItem.Uri.ToString());
                 cloudBlob.FetchAttributes();
 
-                Console.WriteLine("Found file in remote storage: " + cloudBlob.Metadata["FileName"]);
                 filesList.Add(new FileEntry()
                 {
                     FileUri = blobItem.Uri,
@@ -168,14 +168,20 @@ namespace SyncApp
 
         private static void init()
         {
+            string machineName = System.Environment.MachineName.ToLower();
+
             // Setup the connection to Windows Azure Storage
             var storageAccount = CloudStorageAccount.Parse(ConfigurationManager.AppSettings["DataConnectionString"]);
+            initBlob(storageAccount, machineName);
+            initTable(storageAccount, machineName);
+        }
+
+        private static void initBlob(CloudStorageAccount storageAccount, string name)
+        {
             _BlobClient = storageAccount.CreateCloudBlobClient();
 
             // Get and create the container
-            string machineName = System.Environment.MachineName;
-            Console.WriteLine("Machine name: " + machineName);
-            _BlobContainer = _BlobClient.GetContainerReference(machineName.ToLower());
+            _BlobContainer = _BlobClient.GetContainerReference(name);
             _BlobContainer.CreateIfNotExist();
 
             // Setup the permissions on the container to be public
@@ -184,11 +190,34 @@ namespace SyncApp
             _BlobContainer.SetPermissions(permissions);
         }
 
-        private static void deleteRemoteFile(Uri fileURI)
+        private static void initTable(CloudStorageAccount storageAccount, string name)
         {
-            Console.WriteLine("Deleting file: " + fileURI);
-            var blob = _BlobContainer.GetBlobReference(fileURI.ToString());
+            CloudTableClient.CreateTablesFromModel(typeof(SyncLoggerService),
+                                                   storageAccount.TableEndpoint.AbsoluteUri, storageAccount.Credentials);
+            _LogService = new SyncLoggerService(name, storageAccount.TableEndpoint.ToString(), storageAccount.Credentials);
+        }
+
+        private static void deleteRemoteFile(FileEntry entry)
+        {
+            /*
+             * Delete Blob
+             */
+            Console.WriteLine("Deleting file: " + entry.CloudFileName);
+            var blob = _BlobContainer.GetBlobReference(entry.FileUri.ToString());
             blob.DeleteIfExists();
+
+            /*
+             * Log delete operation
+             */ 
+            try
+            {
+                _LogService.LogEntry(entry.CloudFileName, OperationType.FILE_DELETE);
+            }
+            catch (DataServiceRequestException ex)
+            {
+                Console.WriteLine("Unable to connect to the table storage server. Please check that the service is running.\n"
+                                 + ex.Message);
+            }
         }
 
         protected static void addFile(FileEntry entry)
@@ -200,8 +229,21 @@ namespace SyncApp
 
             // Set the metadata into the blob
             blob.Metadata["FileName"] = entry.CloudFileName;
-            blob.Metadata["Modified"] = entry.Modified.ToLongTimeString();
+            blob.Metadata["Modified"] = entry.Modified.ToString();
             blob.SetMetadata();
+
+            /*
+            * Log add operation
+            */
+            try
+            {
+                _LogService.LogEntry(entry.CloudFileName, OperationType.FILE_CREATE);
+            }
+            catch (DataServiceRequestException ex)
+            {
+                Console.WriteLine("Unable to connect to the table storage server. Please check that the service is running.\n"
+                                 + ex.Message);
+            }
         }
     }
 }
