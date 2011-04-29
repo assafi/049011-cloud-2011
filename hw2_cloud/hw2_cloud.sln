@@ -7,6 +7,8 @@ Project("{CC5FD16D-436D-48AD-A40C-5A424C6E3E79}") = "SyncWebsiteCloud", "SyncWeb
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SyncWebsite", "SyncWebsite\SyncWebsite.csproj", "{27D4B9D2-79A8-4943-9A6E-10DCC9FCB15A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SyncLibrary", "SyncLibrary\SyncLibrary.csproj", "{65BDA1C1-8BD1-4B36-A971-603205217BA2}"
+EndProject
 Global
 	GlobalSection(SubversionScc) = preSolution
 		Svn-Managed = True
@@ -51,6 +53,16 @@ Global
 		{27D4B9D2-79A8-4943-9A6E-10DCC9FCB15A}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{27D4B9D2-79A8-4943-9A6E-10DCC9FCB15A}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{27D4B9D2-79A8-4943-9A6E-10DCC9FCB15A}.Release|x86.ActiveCfg = Release|Any CPU
+		{65BDA1C1-8BD1-4B36-A971-603205217BA2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{65BDA1C1-8BD1-4B36-A971-603205217BA2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{65BDA1C1-8BD1-4B36-A971-603205217BA2}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{65BDA1C1-8BD1-4B36-A971-603205217BA2}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{65BDA1C1-8BD1-4B36-A971-603205217BA2}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{65BDA1C1-8BD1-4B36-A971-603205217BA2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{65BDA1C1-8BD1-4B36-A971-603205217BA2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{65BDA1C1-8BD1-4B36-A971-603205217BA2}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{65BDA1C1-8BD1-4B36-A971-603205217BA2}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{65BDA1C1-8BD1-4B36-A971-603205217BA2}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
