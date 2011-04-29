@@ -4,6 +4,8 @@ using System.Linq;
 using System.Web;
 using System.Web.Security;
 using System.Web.SessionState;
+using Microsoft.WindowsAzure;
+using Microsoft.WindowsAzure.ServiceRuntime;
 
 namespace SyncWebsite
 {
@@ -12,7 +14,11 @@ namespace SyncWebsite
 
         void Application_Start(object sender, EventArgs e)
         {
-            // Code that runs on application startup
+            CloudStorageAccount.SetConfigurationSettingPublisher((configName, configSetter) =>
+            {
+                // Provide the configSetter with the initial value
+                configSetter(RoleEnvironment.GetConfigurationSettingValue(configName));
+            });
 
         }
 

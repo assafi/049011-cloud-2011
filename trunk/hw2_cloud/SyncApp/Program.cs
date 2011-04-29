@@ -9,6 +9,7 @@ using System.Data.Services.Client;
 using Microsoft.WindowsAzure;
 using Microsoft.WindowsAzure.ServiceRuntime;
 using Microsoft.WindowsAzure.StorageClient;
+using SyncLibrary;
 
 
 namespace SyncApp
@@ -16,7 +17,6 @@ namespace SyncApp
     class Program
     {
 
-        private static CloudBlobClient _BlobClient = null;
         private static CloudBlobContainer _BlobContainer = null;
         private static SyncLoggerService _LogService = null;
 
@@ -43,7 +43,7 @@ namespace SyncApp
             while (true)
             {
                 di.Refresh();
-                List<FileEntry> cloudFiles = getCloudFiles();
+                List<FileEntry> cloudFiles = SyncFileBrowser.getCloudFiles(_BlobContainer);
                 List<FileEntry> localFiles = getLocalFiles(di);
                 syncLocalRemoteFiles(localFiles, cloudFiles);
                 Thread.Sleep(SLEEP_TIME);
@@ -136,29 +136,6 @@ namespace SyncApp
 
         }
 
-        private static List<FileEntry> getCloudFiles()
-        {
-            // Get a list of the blobs
-            var blobs = _BlobContainer.ListBlobs();
-            var filesList = new List<FileEntry>();
-
-            // For each item, create a FileEntry which will populate the grid
-            foreach (var blobItem in blobs)
-            {
-                var cloudBlob = _BlobContainer.GetBlobReference(blobItem.Uri.ToString());
-                cloudBlob.FetchAttributes();
-
-                filesList.Add(new FileEntry()
-                {
-                    FileUri = blobItem.Uri,
-                    CloudFileName = cloudBlob.Metadata["FileName"],
-                    Modified = DateTime.Parse(cloudBlob.Metadata["Modified"]),
-                    FileInfo = null,
-                });
-            }
-
-            return filesList;
-        }
 
         private static bool checkValidFolder(string folderPath)
         {
@@ -172,30 +149,11 @@ namespace SyncApp
 
             // Setup the connection to Windows Azure Storage
             var storageAccount = CloudStorageAccount.Parse(ConfigurationManager.AppSettings["DataConnectionString"]);
-            initBlob(storageAccount, machineName);
-            initTable(storageAccount, machineName);
+            _BlobContainer = SyncFileBrowser.initBlob(storageAccount, machineName);
+            _LogService = SyncFileBrowser.initTable(storageAccount, machineName);
         }
 
-        private static void initBlob(CloudStorageAccount storageAccount, string name)
-        {
-            _BlobClient = storageAccount.CreateCloudBlobClient();
-
-            // Get and create the container
-            _BlobContainer = _BlobClient.GetContainerReference(name);
-            _BlobContainer.CreateIfNotExist();
-
-            // Setup the permissions on the container to be public
-            var permissions = new BlobContainerPermissions();
-            permissions.PublicAccess = BlobContainerPublicAccessType.Container;
-            _BlobContainer.SetPermissions(permissions);
-        }
-
-        private static void initTable(CloudStorageAccount storageAccount, string name)
-        {
-            CloudTableClient.CreateTablesFromModel(typeof(SyncLoggerService),
-                                                   storageAccount.TableEndpoint.AbsoluteUri, storageAccount.Credentials);
-            _LogService = new SyncLoggerService(name, storageAccount.TableEndpoint.ToString(), storageAccount.Credentials);
-        }
+        
 
         private static void deleteRemoteFile(FileEntry entry)
         {

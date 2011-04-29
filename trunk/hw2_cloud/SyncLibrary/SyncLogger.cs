@@ -6,7 +6,7 @@ using System.Text;
 using Microsoft.WindowsAzure.StorageClient;
 using Microsoft.WindowsAzure;
 
-namespace SyncApp
+namespace SyncLibrary
 {
     public class SyncLoggerEntry : Microsoft.WindowsAzure.StorageClient.TableServiceEntity
     {
