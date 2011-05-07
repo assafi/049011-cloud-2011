@@ -6,6 +6,7 @@ using System.IO;
 using System.Configuration;
 using System.Threading;
 using System.Data.Services.Client;
+using System.Globalization;
 using Microsoft.WindowsAzure;
 using Microsoft.WindowsAzure.ServiceRuntime;
 using Microsoft.WindowsAzure.StorageClient;
@@ -34,7 +35,14 @@ namespace SyncApp
             }
 
             init();
+            //deleteAll();
             sync();
+            Console.ReadKey();
+        }
+
+        private static void deleteAll()
+        {
+            SyncFileBrowser.deleteAll(CloudStorageAccount.Parse(ConfigurationManager.AppSettings["DataConnectionString"]));
         }
 
         private static void sync()
@@ -127,9 +135,10 @@ namespace SyncApp
                 filesList.Add(new FileEntry()
                 {         
                     FileUri = null,
-                    CloudFileName = monitoredFolderPath + "/" + file.FullName,
+                    CloudFileName = file.FullName,
                     Modified = file.LastWriteTime,
                     FileInfo = file,
+                    ContainerName = _BlobContainer.Name,
                 });
             }
             return filesList;
@@ -180,14 +189,14 @@ namespace SyncApp
 
         protected static void addFile(FileEntry entry)
         {
-            Console.WriteLine("Adding file: " + entry.CloudFileName);
+            Console.WriteLine("Adding file: " + entry.CloudFileName + " Modified at: " + customDateString(entry.Modified));
             // Create the Blob and upload the file
             var blob = _BlobContainer.GetBlobReference(Guid.NewGuid().ToString() + entry.FileInfo.Name);
             blob.UploadFromStream(entry.FileInfo.OpenRead());
 
             // Set the metadata into the blob
             blob.Metadata["FileName"] = entry.CloudFileName;
-            blob.Metadata["Modified"] = entry.Modified.ToString();
+            blob.Metadata["Modified"] = customDateString(entry.Modified);
             blob.SetMetadata();
 
             /*
@@ -202,6 +211,12 @@ namespace SyncApp
                 Console.WriteLine("Unable to connect to the table storage server. Please check that the service is running.\n"
                                  + ex.Message);
             }
+        }
+
+        private static string customDateString(DateTime dateTime)
+        {
+            return string.Format("{0:" + new CultureInfo("he-IL").DateTimeFormat.ShortDatePattern + 
+                " " + new CultureInfo("he-IL").DateTimeFormat.LongTimePattern + "}", dateTime);
         }
     }
 }

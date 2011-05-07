@@ -12,5 +12,13 @@ namespace SyncLibrary
             public string CloudFileName { get; set; } //File name (absolute path on local computer)
             public DateTime Modified { get; set; } //Last modification date
             public FileInfo FileInfo { get; set; } //More File info created by OS
+            public string ContainerName { get; set; } //The holder container of this file 
+            public string NameWithLink 
+            { 
+                get 
+                {
+                    return "<a href=\"" + FileUri.ToString() + "\">" + CloudFileName + "\"</a>"; 
+                } 
+            }
         }
 }

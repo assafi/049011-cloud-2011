@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Globalization;
 using Microsoft.WindowsAzure;
 using Microsoft.WindowsAzure.StorageClient;
 
@@ -9,6 +10,21 @@ namespace SyncLibrary
 {
     public class SyncFileBrowser
     {
+        public static IEnumerable<CloudBlobContainer> getBlobContainers(CloudStorageAccount storageAccount)
+        {
+            var BlobClient = storageAccount.CreateCloudBlobClient();
+
+            //Get all containers
+            IEnumerable<CloudBlobContainer> Containers = BlobClient.ListContainers();
+            var permissions = new BlobContainerPermissions();
+            permissions.PublicAccess = BlobContainerPublicAccessType.Container;
+            foreach (var Container in Containers)
+            {
+                Container.SetPermissions(permissions);
+            }
+            return Containers;
+        }
+
         public static CloudBlobContainer initBlob(CloudStorageAccount storageAccount, string name)
         {
             var BlobClient = storageAccount.CreateCloudBlobClient();
@@ -44,16 +60,40 @@ namespace SyncLibrary
                 var cloudBlob = blobContainer.GetBlobReference(blobItem.Uri.ToString());
                 cloudBlob.FetchAttributes();
 
-                filesList.Add(new FileEntry()
+                try
                 {
-                    FileUri = blobItem.Uri,
-                    CloudFileName = cloudBlob.Metadata["FileName"],
-                    Modified = DateTime.Parse(cloudBlob.Metadata["Modified"]),
-                    FileInfo = null,
-                });
+                    filesList.Add(new FileEntry()
+                    {
+                        FileUri = blobItem.Uri,
+                        CloudFileName = cloudBlob.Metadata["FileName"],
+                        Modified = parseDateTime(cloudBlob.Metadata["Modified"]),
+                        FileInfo = null,
+                        ContainerName = blobContainer.Name,
+                    });
+                }
+                catch (FormatException fe)
+                {
+                    Console.Error.WriteLine("Error while processing file: " + cloudBlob.Metadata["FileName"]);
+                    Console.Error.WriteLine(fe.Message);
+                    continue;
+                }
             }
 
             return filesList;
+        }
+
+        private static DateTime parseDateTime(string p)
+        {
+            return DateTime.Parse(p, new CultureInfo("he-IL"));
+        }
+
+        public static void deleteAll(CloudStorageAccount storageAccount)
+        {
+            IEnumerable<CloudBlobContainer> Containers = getBlobContainers(storageAccount);
+            foreach (var container in Containers)
+            {
+                container.Delete();
+            }
         }
     }
 }

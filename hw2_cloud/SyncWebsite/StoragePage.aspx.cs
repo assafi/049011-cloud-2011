@@ -12,7 +12,7 @@ namespace SyncWebsite
 {
     public partial class WebForm1 : System.Web.UI.Page
     {
-        private static CloudBlobContainer blob;
+        private static IEnumerable<CloudBlobContainer> containers;
 
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -23,20 +23,23 @@ namespace SyncWebsite
                 Response.Redirect("~/Password.aspx");
                 return;
             }
-            var machineName = System.Environment.MachineName.ToLower();
             var account = CloudStorageAccount.FromConfigurationSetting("DataConnectionString");
 
             if (!IsPostBack)
             {
-                blob = SyncFileBrowser.initBlob(account, machineName); //Need to initialize only once
+                containers = SyncFileBrowser.getBlobContainers(account); //Need to initialize only once
             }
             /*
              * Refresh results
-             */ 
-            List<FileEntry> files = SyncFileBrowser.getCloudFiles(blob);
+             */
+            List<FileEntry> files = new List<FileEntry>();
+            foreach (CloudBlobContainer container in containers)
+            {
+                files.AddRange(SyncFileBrowser.getCloudFiles(container));
+            }
 
-            this.filesList.DataSource = files;
-            this.filesList.DataBind();
+            this.FilesView.DataSource = files;
+            this.FilesView.DataBind();
         }
 
         protected string GetSessionString(string keyName)
