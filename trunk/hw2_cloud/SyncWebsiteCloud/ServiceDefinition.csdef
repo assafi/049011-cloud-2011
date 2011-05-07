@@ -16,6 +16,7 @@
     </Imports>
     <ConfigurationSettings>
       <Setting name="DataConnectionString" />
+      <Setting name="SuperSecretPassword" />
     </ConfigurationSettings>
   </WebRole>
 </ServiceDefinition>

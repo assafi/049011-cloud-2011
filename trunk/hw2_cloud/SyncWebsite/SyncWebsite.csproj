@@ -65,6 +65,7 @@
     <Content Include="Account\Login.aspx" />
     <Content Include="Account\Register.aspx" />
     <Content Include="LogsPage.aspx" />
+    <Content Include="Password.aspx" />
     <Content Include="Styles\Site.css" />
     <Content Include="Default.aspx" />
     <Content Include="Global.asax" />
@@ -132,6 +133,13 @@
     </Compile>
     <Compile Include="LogsPage.aspx.designer.cs">
       <DependentUpon>LogsPage.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Password.aspx.cs">
+      <DependentUpon>Password.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Password.aspx.designer.cs">
+      <DependentUpon>Password.aspx</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Site.Master.cs">
