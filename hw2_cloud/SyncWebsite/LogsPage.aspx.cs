@@ -15,15 +15,31 @@ namespace SyncWebsite
 {
     public partial class LogsPage : System.Web.UI.Page
     {
+        private static SyncLoggerService context;
+
         protected void Page_Load(object sender, EventArgs e)
         {
+            bool loggedIn = (GetSessionObject("LoggedIn") == null ? false : (bool)GetSessionObject("LoggedIn"));
+            if (!loggedIn)
+            {
+                StoreInSession("goBackToURL", Request.RawUrl); //The URL to get back to after password is verified
+                Response.Redirect("~/Password.aspx");
+                return;
+            }
+
             try
             {
-                var machineName = System.Environment.MachineName.ToLower();
-                var account = CloudStorageAccount.FromConfigurationSetting("DataConnectionString");
-                var context = new SyncLoggerService(machineName, account.TableEndpoint.ToString(), account.Credentials);
-
-                this.LogView.DataSource = context.Logs;
+                if (!IsPostBack)
+                {
+                    /*
+                     * Intialize only once
+                     */ 
+                    var machineName = System.Environment.MachineName.ToLower();
+                    var account = CloudStorageAccount.FromConfigurationSetting("DataConnectionString");
+                    context = new SyncLoggerService(machineName, account.TableEndpoint.ToString(), account.Credentials);
+                }
+                
+                this.LogView.DataSource = context.Logs; //Refresh at every read
                 this.LogView.DataBind();
             }
             catch (DataServiceRequestException ex)
@@ -31,6 +47,26 @@ namespace SyncWebsite
                 Console.WriteLine("Unable to connect to the table storage server. Please check that the service is running.<br>"
                                  + ex.Message);
             }
+        }
+
+        protected string GetSessionString(string keyName)
+        {
+            if (Request.RequestContext.HttpContext.Session[keyName] != null)
+            {
+                return Request.RequestContext.HttpContext.Session[keyName].ToString();
+            }
+
+            return string.Empty;
+        }
+
+        protected object GetSessionObject(string keyName)
+        {
+            return Request.RequestContext.HttpContext.Session[keyName];
+        }
+
+        private void StoreInSession(string keyName, object value)
+        {
+            Request.RequestContext.HttpContext.Session.Add(keyName, value);
         }
     }
 }

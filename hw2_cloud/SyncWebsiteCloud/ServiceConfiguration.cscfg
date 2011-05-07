@@ -5,6 +5,7 @@
     <ConfigurationSettings>
       <Setting name="Microsoft.WindowsAzure.Plugins.Diagnostics.ConnectionString" value="UseDevelopmentStorage=true" />
       <Setting name="DataConnectionString" value="DefaultEndpointsProtocol=http;AccountName=assafoshritstorage;AccountKey=e/N+3jTKS8FVCjUbHfyEPRHevGwSZjyQTv+G1OOQyj2psOfBjllnDR5IixQvshWFUvsXPDmuLw/HrmklCNwtiw==" />
+      <Setting name="SuperSecretPassword" value="049011" />
     </ConfigurationSettings>
   </Role>
 </ServiceConfiguration>
