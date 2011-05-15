@@ -4,6 +4,12 @@ using System.Linq;
 using System.Web;
 using System.Web.Security;
 using System.Web.SessionState;
+using System.Data.Services.Client;
+using Microsoft.WindowsAzure;
+using Microsoft.WindowsAzure.Diagnostics;
+using Microsoft.WindowsAzure.ServiceRuntime;
+using Microsoft.WindowsAzure.StorageClient;
+
 
 namespace WebRole1
 {
@@ -12,7 +18,10 @@ namespace WebRole1
 
         void Application_Start(object sender, EventArgs e)
         {
-            // Code that runs on application startup
+            CloudStorageAccount.SetConfigurationSettingPublisher((configName, configSetter) =>
+                {
+                    configSetter(RoleEnvironment.GetConfigurationSettingValue(configName));
+                });
 
         }
 
