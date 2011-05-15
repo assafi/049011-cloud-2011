@@ -8,17 +8,10 @@ namespace SyncLibrary
 {
         public class FileEntry
         {
-            public Uri FileUri { get; set; } //File URI on the storage
-            public string CloudFileName { get; set; } //File name (absolute path on local computer)
-            public DateTime Modified { get; set; } //Last modification date
-            public FileInfo FileInfo { get; set; } //More File info created by OS
-            public string ContainerName { get; set; } //The holder container of this file 
-            public string NameWithLink 
-            { 
-                get 
-                {
-                    return "<a href=\"" + FileUri.ToString() + "\">" + CloudFileName + "\"</a>"; 
-                } 
-            }
+            public Uri FileUri { get; set; } //File URI on the storage            
+            public DateTime StartTime { get; set; } //Last modification date
+            public DateTime EndTime { get; set; } //Last modification date
+            public int WorkerId { get; set; } //More File info created by OS
+            public string blobRef { get; set; } //More File info created by OS
         }
 }
