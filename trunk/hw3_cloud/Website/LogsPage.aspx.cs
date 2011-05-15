@@ -15,7 +15,7 @@ namespace SyncWebsite
 {
     public partial class LogsPage : System.Web.UI.Page
     {
-        private static SyncLoggerService context;
+        private static CaptureTableService context;
 
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -36,11 +36,11 @@ namespace SyncWebsite
                      */ 
                     var machineName = System.Environment.MachineName.ToLower();
                     var account = CloudStorageAccount.FromConfigurationSetting("DataConnectionString");
-                    context = new SyncLoggerService(machineName, account.TableEndpoint.ToString(), account.Credentials);
+                    context = new CaptureTableService(account.TableEndpoint.ToString(), account.Credentials);
                 }
                 
-                this.LogView.DataSource = context.Logs; //Refresh at every read
-                this.LogView.DataBind();
+                //this.LogView.DataSource = context.Logs; //Refresh at every read
+                //this.LogView.DataBind();
             }
             catch (DataServiceRequestException ex)
             {
