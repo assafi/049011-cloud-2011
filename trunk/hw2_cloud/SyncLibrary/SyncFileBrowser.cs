@@ -41,13 +41,6 @@ namespace SyncLibrary
             return BlobContainer;
         }
 
-        public static SyncLoggerService initTable(CloudStorageAccount storageAccount, string name)
-        {
-            CloudTableClient.CreateTablesFromModel(typeof(SyncLoggerService),
-                                                   storageAccount.TableEndpoint.AbsoluteUri, storageAccount.Credentials);
-            return (new SyncLoggerService(name, storageAccount.TableEndpoint.ToString(), storageAccount.Credentials));
-        }
-
         public static List<FileEntry> getCloudFiles(CloudBlobContainer blobContainer)
         {
             // Get a list of the blobs
@@ -65,10 +58,6 @@ namespace SyncLibrary
                     filesList.Add(new FileEntry()
                     {
                         FileUri = blobItem.Uri,
-                        CloudFileName = cloudBlob.Metadata["FileName"],
-                        Modified = parseDateTime(cloudBlob.Metadata["Modified"]),
-                        FileInfo = null,
-                        ContainerName = blobContainer.Name,
                     });
                 }
                 catch (FormatException fe)
