@@ -13,12 +13,48 @@ namespace SyncWebsite {
     public partial class LogsPage {
         
         /// <summary>
-        /// LogView control.
+        /// URLSearchText control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.GridView LogView;
+        protected global::System.Web.UI.WebControls.TextBox URLSearchText;
+        
+        /// <summary>
+        /// SearchSubmit control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button SearchSubmit;
+        
+        /// <summary>
+        /// ThumbnailView control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.DetailsView ThumbnailView;
+        
+        /// <summary>
+        /// dsThumbnails control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.EntityDataSource dsThumbnails;
+        
+        /// <summary>
+        /// QueryExtender1 control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.QueryExtender QueryExtender1;
     }
 }

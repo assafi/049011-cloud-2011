@@ -73,8 +73,8 @@ namespace WorkerRole1
             /*
              * Main loop
              */ 
-            _queue.AddMessage(new CloudQueueMessage(@"http://www.google.com"));
-            _table.addCaptureEntry(@"http://www.google.com");
+           // _queue.AddMessage(new CloudQueueMessage(@"http://www.google.com"));
+           // _table.addCaptureEntry(@"http://www.google.com");
             while (true)
             {
                 var msg = _queue.GetMessage(); //batch

@@ -73,6 +73,7 @@
     <Content Include="Scripts\jquery-1.4.1-vsdoc.js" />
     <Content Include="Scripts\jquery-1.4.1.js" />
     <Content Include="Scripts\jquery-1.4.1.min.js" />
+    <Content Include="UploadPage.aspx" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
@@ -149,6 +150,13 @@
     <Compile Include="StoragePage.aspx.designer.cs">
       <DependentUpon>StoragePage.aspx</DependentUpon>
     </Compile>
+    <Compile Include="UploadPage.aspx.cs">
+      <DependentUpon>UploadPage.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UploadPage.aspx.designer.cs">
+      <DependentUpon>UploadPage.aspx</DependentUpon>
+    </Compile>
     <Compile Include="WebRole.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -159,7 +167,7 @@
     <Content Include="Site.Master" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\SyncLibrary\SyncLibrary.csproj">
+    <ProjectReference Include="..\..\hw2_cloud\SyncLibrary\SyncLibrary.csproj">
       <Project>{65BDA1C1-8BD1-4B36-A971-603205217BA2}</Project>
       <Name>SyncLibrary</Name>
     </ProjectReference>

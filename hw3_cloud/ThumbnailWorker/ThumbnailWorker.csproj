@@ -89,7 +89,7 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\SyncLibrary\SyncLibrary.csproj">
+    <ProjectReference Include="..\..\hw2_cloud\SyncLibrary\SyncLibrary.csproj">
       <Project>{65BDA1C1-8BD1-4B36-A971-603205217BA2}</Project>
       <Name>SyncLibrary</Name>
     </ProjectReference>

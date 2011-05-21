@@ -2,28 +2,31 @@
 <asp:Content ID="Content1" ContentPlaceHolderID="HeadContent" runat="server">
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="MainContent" runat="server">
-    Log Entries:
-    <br />
-    <br />
     <div>
-        <asp:GridView ID="LogView" runat="server" CellPadding="4" ForeColor="#333333" AutoGenerateColumns="False"
-            BorderStyle="Solid">
-            <AlternatingRowStyle BackColor="White" />
-            <Columns>
-                <asp:BoundField DataField="ComputerName" HeaderText="Computer Name" />
-                <asp:BoundField DataField="FileName" HeaderText="File Name" />
-                <asp:BoundField DataField="Operation" HeaderText="Operation Type" />
-            </Columns>
-            <EditRowStyle BackColor="#2461BF" />
-            <FooterStyle BackColor="#507CD1" Font-Bold="True" ForeColor="White" />
-            <HeaderStyle BackColor="#507CD1" Font-Bold="True" ForeColor="White" />
-            <PagerStyle BackColor="#2461BF" ForeColor="White" HorizontalAlign="Center" />
-            <RowStyle BackColor="#EFF3FB" />
-            <SelectedRowStyle BackColor="#D1DDF1" Font-Bold="True" ForeColor="#333333" />
-            <SortedAscendingCellStyle BackColor="#F5F7FB" />
-            <SortedAscendingHeaderStyle BackColor="#6D95E1" />
-            <SortedDescendingCellStyle BackColor="#E9EBEF" />
-            <SortedDescendingHeaderStyle BackColor="#4870BE" />
-        </asp:GridView>
+        URL to search: <asp:TextBox ID="URLSearchText" runat="server"></asp:TextBox>
+        <asp:Button ID="SearchSubmit" runat="server" Text="Search" 
+            onclick="SearchSubmit_Click" />
+        <asp:DetailsView ID="ThumbnailView" runat="server" Caption="Thumbnail data" 
+            Height="250px" Width="276px" 
+            AutoGenerateRows="False" BorderStyle="None" 
+            EmptyDataText="No capture exists for the requested URL" GridLines="Horizontal">
+            <Fields>
+                <asp:ImageField HeaderText="Thumbnail:" DataImageUrlField="blobRef">
+                </asp:ImageField>
+                <asp:BoundField DataField="url" HeaderText="Webpage URL:" />
+                <asp:BoundField DataField="WorkerId" HeaderText="Responsible server name:" />
+                <asp:BoundField DataField="StartTime" HeaderText="Date taken:" />
+            </Fields>
+        </asp:DetailsView>
+        <!-- <asp:EntityDataSource ID="dsThumbnails" runat="server" 
+            EntitySetName="Captures" Where="it.url <= @URLSearchText">
+            <WhereParameters>
+                <asp:ControlParameter ControlID="URLSearchText" Name="url" 
+                PropertyName="Text" Type="String" />
+            </WhereParameters>
+        </asp:EntityDataSource>
+        <asp:QueryExtender ID="QueryExtender1" runat="server" 
+            TargetControlID="dsThumbnails">
+        </asp:QueryExtender> -->
     </div>
 </asp:Content>
