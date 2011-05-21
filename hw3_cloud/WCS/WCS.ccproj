@@ -11,6 +11,10 @@
     <AssemblyName>WCS</AssemblyName>
     <StartDevelopmentStorage>True</StartDevelopmentStorage>
     <Name>WCS</Name>
+    <SccProjectName>Svn</SccProjectName>
+    <SccProvider>SubversionScc</SccProvider>
+    <SccAuxPath>Svn</SccAuxPath>
+    <SccLocalPath>Svn</SccLocalPath>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
