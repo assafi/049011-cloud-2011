@@ -15,14 +15,7 @@ namespace SyncWebsite
         private static IEnumerable<CloudBlobContainer> containers;
 
         protected void Page_Load(object sender, EventArgs e)
-        {
-            bool loggedIn = (GetSessionObject("LoggedIn") == null ? false : (bool)GetSessionObject("LoggedIn"));
-            if (!loggedIn)
-            {
-                StoreInSession("goBackToURL", Request.RawUrl);
-                Response.Redirect("~/Password.aspx");
-                return;
-            }
+        {            
             var account = CloudStorageAccount.FromConfigurationSetting("DataConnectionString");
 
             if (!IsPostBack)

@@ -18,15 +18,7 @@ namespace SyncWebsite
         private static CaptureTableService context;
 
         protected void Page_Load(object sender, EventArgs e)
-        {
-            bool loggedIn = (GetSessionObject("LoggedIn") == null ? false : (bool)GetSessionObject("LoggedIn"));
-            if (!loggedIn)
-            {
-                StoreInSession("goBackToURL", Request.RawUrl); //The URL to get back to after password is verified
-                Response.Redirect("~/Password.aspx");
-                return;
-            }
-
+        {           
             try
             {
                 if (!IsPostBack)
@@ -38,9 +30,10 @@ namespace SyncWebsite
                     var account = CloudStorageAccount.FromConfigurationSetting("DataConnectionString");
                     context = new CaptureTableService(account.TableEndpoint.ToString(), account.Credentials);
                 }
-                
-                //this.LogView.DataSource = context.Logs; //Refresh at every read
-                //this.LogView.DataBind();
+
+                // this.ThumbnailView.DataSource = context.Captures; //Refresh at every read
+                // this.dsThumbnails.EntitySetName = context.Capture; //Refresh at every read
+                //this.ThumbnailView.DataBind();
             }
             catch (DataServiceRequestException ex)
             {
@@ -67,6 +60,34 @@ namespace SyncWebsite
         private void StoreInSession(string keyName, object value)
         {
             Request.RequestContext.HttpContext.Session.Add(keyName, value);
+        }
+
+        protected void SearchSubmit_Click(object sender, EventArgs e)
+        {
+            string searchedURL = this.URLSearchText.Text;
+            if (isValid(searchedURL))
+            {
+
+                IEnumerable<CaptureEntry> entries = from capture in context.Captures where capture.url == searchedURL select capture;
+
+                /* CaptureEntry selectedCapture =
+                    (from capture in context.Captures
+                     where capture.url == searchedURL
+                     select capture).FirstOrDefault<CaptureEntry>(); */
+                     //context.CapturesByID(searchedURL); //Refresh at every read                
+               
+                    this.ThumbnailView.DataSource = entries;
+                    this.ThumbnailView.DataBind();
+               
+            }
+        }
+
+        private Boolean isValid(string url)
+        {
+            if (url == string.Empty)
+                return false;
+            else
+                return true;
         }
     }
 }
