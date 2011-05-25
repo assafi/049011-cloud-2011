@@ -19,7 +19,8 @@ namespace WorkerRole1
     {
         private CloudBlobContainer _blobContainer = null;
         private CloudQueue _queue = null;
-        private CaptureTableService _table = null;
+        private CaptureTableService _captureTable = null;
+        private WorkerTableService _workersTable = null;
         private string _wid = RoleEnvironment.CurrentRoleInstance.Id;
 
         private string captureSite(string url) 
@@ -67,33 +68,41 @@ namespace WorkerRole1
             var storageAccount = CloudStorageAccount.FromConfigurationSetting("DataConnectionString");
             _blobContainer = initStorage(storageAccount);
             _queue = initQueue(storageAccount);
-            _table = initTable(storageAccount);
+            _captureTable = initCaptureTable(storageAccount);
+            _workersTable = initWorkersTable(storageAccount, _wid);
 
             /*
              * Main loop
-             */ 
-            while (true)
+             */
+            try
             {
-                /*
-                 * Batching messages handling to increase performance
-                 */ 
-                int numberOfMsg2Fetch = (int)Math.Floor(((double)_queue.RetrieveApproximateMessageCount()) / 
-                    workersCount()) + 1;
-                List<CloudQueueMessage> fetchedMessages = _queue.GetMessages(numberOfMsg2Fetch)
-                    .ToList<CloudQueueMessage>();
-
-                Trace.TraceInformation("Worker " + _wid + " fetched " + fetchedMessages.Count + 
-                    " messages from the queue.");
-
-                if (fetchedMessages.Count == 0 ||
-                    (fetchedMessages.Count == 1 && fetchedMessages.First() == null))
+                while (true)
                 {
-                    Thread.Sleep(TimeSpan.FromSeconds(3));
+                    /*
+                     * Batching messages handling to increase performance
+                     */
+                    int numberOfMsg2Fetch = (int)Math.Floor(((double)_queue.RetrieveApproximateMessageCount()) /
+                        workersCount()) + 1;
+                    List<CloudQueueMessage> fetchedMessages = _queue.GetMessages(numberOfMsg2Fetch)
+                        .ToList<CloudQueueMessage>();
+
+                    Trace.TraceInformation("Worker " + _wid + " fetched " + fetchedMessages.Count +
+                        " messages from the queue.");
+
+                    if (fetchedMessages.Count == 0 ||
+                        (fetchedMessages.Count == 1 && fetchedMessages.First() == null))
+                    {
+                        Thread.Sleep(TimeSpan.FromSeconds(3));
+                    }
+                    else
+                    {
+                        fetchedMessages.ForEach(processMessage);
+                    }
                 }
-                else
-                {
-                    fetchedMessages.ForEach(processMessage);
-                }
+            }
+            finally
+            {
+                _workersTable.removeWorder(_wid);
             }
         }
 
@@ -106,7 +115,7 @@ namespace WorkerRole1
                     string taskId = msg.AsString;
 
                     Trace.TraceInformation("Worker " + _wid + " started working on task #" + taskId);
-                    string url = _table.startProcessingCapture(taskId, _wid);
+                    string url = _captureTable.startProcessingCapture(taskId, _wid);
                     string tempFilePath = null;
                     try
                     {
@@ -119,7 +128,7 @@ namespace WorkerRole1
                     }
 
                     CloudBlob blobRef = uploadCapture(tempFilePath);
-                    _table.finishProcessingCapture(taskId, blobRef);
+                    _captureTable.finishProcessingCapture(taskId, blobRef);
                     Trace.TraceInformation("Worker " + _wid + " finished working on task #" + taskId);
                 }
                 _queue.DeleteMessage(msg);
@@ -128,13 +137,13 @@ namespace WorkerRole1
 
         private int workersCount()
         {
-            return 1;
+            return _workersTable.count();
         }
 
         private CloudBlob uploadCapture(string tempFilePath)
         {
             FileInfo file = new FileInfo(tempFilePath);
-            string blobUri = file.Name + "_" + Guid.NewGuid().ToString();
+            string blobUri = Guid.NewGuid().ToString() + "_" + file.Name;
             var blob = _blobContainer.GetBlobReference(blobUri);
             blob.Properties.ContentType = "image/png";
             blob.UploadFile(tempFilePath);
@@ -205,11 +214,25 @@ namespace WorkerRole1
             return container;
         }
 
-        public static CaptureTableService initTable(CloudStorageAccount storageAccount)
+        public static CaptureTableService initCaptureTable(CloudStorageAccount storageAccount)
         {
             CloudTableClient.CreateTablesFromModel(typeof(CaptureTableService),
                                                    storageAccount.TableEndpoint.AbsoluteUri, storageAccount.Credentials);
             return new CaptureTableService(storageAccount.TableEndpoint.ToString(), storageAccount.Credentials);
+        }
+
+        public static WorkerTableService initWorkersTable(CloudStorageAccount storageAccount, string wid)
+        {
+            CloudTableClient.CreateTablesFromModel(typeof(WorkerTableService),
+                storageAccount.TableEndpoint.AbsoluteUri, storageAccount.Credentials);
+
+            WorkerTableService wts = new WorkerTableService(storageAccount.TableEndpoint.ToString(),
+                storageAccount.Credentials);
+            /*
+             * Registering worker
+             */ 
+            wts.addWorker(wid); 
+            return wts;
         }
 
         public override bool OnStart()
