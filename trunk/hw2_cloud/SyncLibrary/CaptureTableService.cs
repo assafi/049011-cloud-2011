@@ -24,19 +24,15 @@ namespace SyncLibrary
 
         public string addCaptureEntry(string url)
         {
-            string id = Guid.NewGuid().ToString();
-            this.AddObject("Captures", new CaptureEntry {id = id, url = url });
+            string guid = Guid.NewGuid().ToString();
+            this.AddObject("Captures", new CaptureEntry { id = guid, url = url });
             this.SaveChanges();
-            return id;
+            return guid;
         }
 
         public string startProcessingCapture(string taskId, string wid)
         {
-            IEnumerable<CaptureEntry> entries = from capture in Captures where capture.id == taskId select capture;
-            if (entries.Count() != 1) {
-                throw new CaptureError("There are " + entries.Count() + " entries in table for task id " + taskId);
-            }
-            CaptureEntry captureEntry = entries.First();
+            CaptureEntry captureEntry = (from capture in Captures where capture.id == taskId select capture).First();
             captureEntry.StartTime = DateTime.Now;
             captureEntry.WorkerId = wid;
             this.UpdateObject(captureEntry);
@@ -46,13 +42,8 @@ namespace SyncLibrary
 
         public void finishProcessingCapture(string taskId, CloudBlob blobRef)
         {
-            IEnumerable<CaptureEntry> entries = from capture in Captures where capture.id == taskId select capture;
-            if (entries.Count() != 1)
-            {
-                throw new CaptureError("There are " + entries.Count() + " entries in table for task id " + taskId);
-            }
-            CaptureEntry captureEntry = entries.First();
-            captureEntry.blobRef = blobRef;
+            CaptureEntry captureEntry = (from capture in Captures where capture.id == taskId select capture).First();
+            captureEntry.blobUri = blobRef.Uri.AbsolutePath;
             captureEntry.EndTime = DateTime.Now;
             this.UpdateObject(captureEntry);
             this.SaveChanges();

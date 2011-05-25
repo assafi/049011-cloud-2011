@@ -15,7 +15,7 @@ namespace SyncLibrary
         public DateTime StartTime { get; set; } //Last modification date
         public DateTime EndTime { get; set; } //Last modification date
         public string WorkerId { get; set; } //More File info created by OS
-        public CloudBlob blobRef { get; set; } //More File info created by OS
+        public string blobUri { get; set; } //More File info created by OS
         
         public CaptureEntry()
         {
@@ -25,7 +25,7 @@ namespace SyncLibrary
 
         override public string ToString()
         {
-            return "ToDo";
+            return string.Format("id: {0}, url: {1}", id, url);
         }
     };
 }
