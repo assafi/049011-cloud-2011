@@ -22,35 +22,47 @@ namespace SyncLibrary
             : base(baseAddress, credentials) { }
         
 
-        public void addCaptureEntry(string url)
+        public string addCaptureEntry(string url)
         {
-            this.AddObject("Captures", new CaptureEntry { url = url });
+            string id = Guid.NewGuid().ToString();
+            this.AddObject("Captures", new CaptureEntry {id = id, url = url });
             this.SaveChanges();
+            return id;
         }
 
-        public void startProcessingCapture(string url, string wid)
+        public string startProcessingCapture(string taskId, string wid)
         {
-            IEnumerable<CaptureEntry> entries = from capture in Captures where capture.url == url select capture;
+            IEnumerable<CaptureEntry> entries = from capture in Captures where capture.id == taskId select capture;
             if (entries.Count() != 1) {
-                throw new CaptureError("There are " + entries.Count() + " entries in table for url " + url);
+                throw new CaptureError("There are " + entries.Count() + " entries in table for task id " + taskId);
             }
             CaptureEntry captureEntry = entries.First();
             captureEntry.StartTime = DateTime.Now;
             captureEntry.WorkerId = wid;
             this.UpdateObject(captureEntry);
+            this.SaveChanges();
+            return captureEntry.url;
         }
 
-        public void finishProcessingCapture(string url, string blobRef)
+        public void finishProcessingCapture(string taskId, CloudBlob blobRef)
         {
-            IEnumerable<CaptureEntry> entries = from capture in Captures where capture.url == url select capture;
+            IEnumerable<CaptureEntry> entries = from capture in Captures where capture.id == taskId select capture;
             if (entries.Count() != 1)
             {
-                throw new CaptureError("There are " + entries.Count() + " entries in table for url " + url);
+                throw new CaptureError("There are " + entries.Count() + " entries in table for task id " + taskId);
             }
             CaptureEntry captureEntry = entries.First();
             captureEntry.blobRef = blobRef;
             captureEntry.EndTime = DateTime.Now;
             this.UpdateObject(captureEntry);
+            this.SaveChanges();
+        }
+
+        public IEnumerable<CaptureEntry> getAllCapturesByUrl(string url)
+        {
+            IEnumerable<CaptureEntry> entries = from capture in Captures where capture.url == url select capture;
+            Console.Out.WriteLine("Number of entries for " + url + " is: " + entries.Count());
+            return entries;
         }
     }
 }
