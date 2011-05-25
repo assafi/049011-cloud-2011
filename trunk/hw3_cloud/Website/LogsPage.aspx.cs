@@ -67,17 +67,18 @@ namespace SyncWebsite
             string searchedURL = this.URLSearchText.Text;
             if (isValid(searchedURL))
             {
-
-                IEnumerable<CaptureEntry> entries = from capture in context.Captures where capture.url == searchedURL select capture;
-
+                //IEnumerable<CaptureEntry> entries = from capture in context.Captures where capture.url == searchedURL select capture;
+                IEnumerable<CaptureEntry> entries = 
+                    context.getAllCapturesByUrl(searchedURL);
                 /* CaptureEntry selectedCapture =
                     (from capture in context.Captures
                      where capture.url == searchedURL
                      select capture).FirstOrDefault<CaptureEntry>(); */
                      //context.CapturesByID(searchedURL); //Refresh at every read                
-               
-                    this.ThumbnailView.DataSource = entries;
-                    this.ThumbnailView.DataBind();
+
+                entries.First().blobRef;
+                this.ThumbnailView.DataSource = entries;
+                this.ThumbnailView.DataBind();
                
             }
         }
