@@ -76,10 +76,8 @@ namespace SyncWebsite
                      select capture).FirstOrDefault<CaptureEntry>(); */
                      //context.CapturesByID(searchedURL); //Refresh at every read                
 
-                entries.First().blobRef;
                 this.ThumbnailView.DataSource = entries;
                 this.ThumbnailView.DataBind();
-               
             }
         }
 

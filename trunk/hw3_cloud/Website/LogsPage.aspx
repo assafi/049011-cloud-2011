@@ -11,7 +11,7 @@
             AutoGenerateRows="False" BorderStyle="None" 
             EmptyDataText="No capture exists for the requested URL" GridLines="Horizontal">
             <Fields>
-                <asp:ImageField HeaderText="Thumbnail:" DataImageUrlField="blobRef">
+                <asp:ImageField HeaderText="Thumbnail:" DataImageUrlField="blobUri">
                 </asp:ImageField>
                 <asp:BoundField DataField="url" HeaderText="Webpage URL:" />
                 <asp:BoundField DataField="WorkerId" HeaderText="Responsible server name:" />
