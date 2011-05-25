@@ -69,59 +69,78 @@ namespace WorkerRole1
             _queue = initQueue(storageAccount);
             _table = initTable(storageAccount);
 
-
             /*
              * Main loop
              */ 
-           // _queue.AddMessage(new CloudQueueMessage(@"http://www.google.com"));
-           // _table.addCaptureEntry(@"http://www.google.com");
             while (true)
             {
-                var msg = _queue.GetMessage(); //batch
-                if (msg != null)
-                {
-                    if (msg.DequeueCount < 3)
-                    {
-                        //var split = msg.AsString.Split(new char[] { '/' }, 2);
-                        //var guid = split[0];
-                        var url = msg.AsString;
-                        Trace.TraceInformation("Worker " + _wid + " started working on " + url);
-                        _table.startProcessingCapture(url, _wid);
-                        string tempFilePath = null;
-                        try
-                        {
-                            tempFilePath = captureSite(url);
-                        }
-                        catch (CaptureError ce)
-                        {
-                            Trace.TraceWarning(ce.Message);
-                            continue;
-                        }
+                /*
+                 * Batching messages handling to increase performance
+                 */ 
+                int numberOfMsg2Fetch = (int)Math.Floor(((double)_queue.RetrieveApproximateMessageCount()) / 
+                    workersCount()) + 1;
+                List<CloudQueueMessage> fetchedMessages = _queue.GetMessages(numberOfMsg2Fetch)
+                    .ToList<CloudQueueMessage>();
 
-                        string blobRef = uploadCapture(tempFilePath);
-                        _table.finishProcessingCapture(url, blobRef);
-                    }
-                    _queue.DeleteMessage(msg);
-                    break; //remove this!!
-                }
-                else
+                Trace.TraceInformation("Worker " + _wid + " fetched " + fetchedMessages.Count + 
+                    " messages from the queue.");
+
+                if (fetchedMessages.Count == 0 ||
+                    (fetchedMessages.Count == 1 && fetchedMessages.First() == null))
                 {
                     Thread.Sleep(TimeSpan.FromSeconds(3));
                 }
+                else
+                {
+                    fetchedMessages.ForEach(processMessage);
+                }
             }
-            Trace.TraceInformation("Worker done.");
         }
 
-        private string uploadCapture(string tempFilePath)
+        private void processMessage(CloudQueueMessage msg)
+        {
+            if (msg != null)
+            {
+                if (msg.DequeueCount < 3)
+                {
+                    string taskId = msg.AsString;
+
+                    Trace.TraceInformation("Worker " + _wid + " started working on task #" + taskId);
+                    string url = _table.startProcessingCapture(taskId, _wid);
+                    string tempFilePath = null;
+                    try
+                    {
+                        tempFilePath = captureSite(url);
+                    }
+                    catch (CaptureError ce)
+                    {
+                        Trace.TraceWarning("Error!!! " + ce.Message);
+                        return;
+                    }
+
+                    CloudBlob blobRef = uploadCapture(tempFilePath);
+                    _table.finishProcessingCapture(taskId, blobRef);
+                    Trace.TraceInformation("Worker " + _wid + " finished working on task #" + taskId);
+                }
+                _queue.DeleteMessage(msg);
+            }
+        }
+
+        private int workersCount()
+        {
+            return 1;
+        }
+
+        private CloudBlob uploadCapture(string tempFilePath)
         {
             FileInfo file = new FileInfo(tempFilePath);
-            string blobRef = file.Name + "_" + Guid.NewGuid().ToString();
-            var blob = _blobContainer.GetBlobReference(blobRef);
+            string blobUri = file.Name + "_" + Guid.NewGuid().ToString();
+            var blob = _blobContainer.GetBlobReference(blobUri);
             blob.Properties.ContentType = "image/png";
             blob.UploadFile(tempFilePath);
             Trace.TraceInformation("Upload capture blob done.");
             File.Delete(tempFilePath);
-            return blobRef;
+            return blob;
         }
 
         private CloudQueue initQueue(CloudStorageAccount storageAccount)
@@ -184,7 +203,6 @@ namespace WorkerRole1
                 }
             }
             return container;
-
         }
 
         public static CaptureTableService initTable(CloudStorageAccount storageAccount)

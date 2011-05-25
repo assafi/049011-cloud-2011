@@ -45,8 +45,8 @@ namespace Website
         {            
             foreach (string url in urlsToUpload)
             {
-                context.addCaptureEntry(url);
-                queue.AddMessage(new CloudQueueMessage(url));                
+                string requestId = context.addCaptureEntry(url);
+                queue.AddMessage(new CloudQueueMessage(requestId));                
             }                                 
         }
 

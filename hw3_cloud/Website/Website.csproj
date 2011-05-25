@@ -66,7 +66,6 @@
     <Content Include="Account\Register.aspx" />
     <Content Include="CutyCapt\CutyCapt.exe" />
     <Content Include="LogsPage.aspx" />
-    <Content Include="StoragePage.aspx" />
     <Content Include="Styles\Site.css" />
     <Content Include="Default.aspx" />
     <Content Include="Global.asax" />
@@ -142,13 +141,6 @@
     </Compile>
     <Compile Include="Site.Master.designer.cs">
       <DependentUpon>Site.Master</DependentUpon>
-    </Compile>
-    <Compile Include="StoragePage.aspx.cs">
-      <DependentUpon>StoragePage.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="StoragePage.aspx.designer.cs">
-      <DependentUpon>StoragePage.aspx</DependentUpon>
     </Compile>
     <Compile Include="UploadPage.aspx.cs">
       <DependentUpon>UploadPage.aspx</DependentUpon>
