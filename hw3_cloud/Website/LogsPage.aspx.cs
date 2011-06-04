@@ -16,6 +16,8 @@ namespace SyncWebsite
     public partial class LogsPage : System.Web.UI.Page
     {
         private static CaptureTableService context;
+        private static CloudBlobContainer container;
+        private static IEnumerable<CaptureEntry> entries = null;
 
         protected void Page_Load(object sender, EventArgs e)
         {           
@@ -29,6 +31,8 @@ namespace SyncWebsite
                     var machineName = System.Environment.MachineName.ToLower();
                     var account = CloudStorageAccount.FromConfigurationSetting("DataConnectionString");
                     context = new CaptureTableService(account.TableEndpoint.ToString(), account.Credentials);
+                    CloudBlobClient blob = new CloudBlobClient(account.BlobEndpoint, account.Credentials);
+                    container = blob.GetContainerReference("thumbnails");
                 }
 
                 // this.ThumbnailView.DataSource = context.Captures; //Refresh at every read
@@ -64,11 +68,12 @@ namespace SyncWebsite
 
         protected void SearchSubmit_Click(object sender, EventArgs e)
         {
+            this.ErrorLbl.Visible = false;
             string searchedURL = this.URLSearchText.Text;
             if (isValid(searchedURL))
             {
                 //IEnumerable<CaptureEntry> entries = from capture in context.Captures where capture.url == searchedURL select capture;
-                IEnumerable<CaptureEntry> entries = 
+                entries = 
                     context.getAllCapturesByUrl(searchedURL);
                 /* CaptureEntry selectedCapture =
                     (from capture in context.Captures
@@ -76,10 +81,22 @@ namespace SyncWebsite
                      select capture).FirstOrDefault<CaptureEntry>(); */
                      //context.CapturesByID(searchedURL); //Refresh at every read                
 
-                this.ThumbnailView.DataSource = entries;
-                this.ThumbnailView.DataBind();
+                // Handle url image                
+                // var cloudBlob = container.GetBlobReference(CaptureEntry.Uri.ToString());
+                // byte[] image = cloudBlob.DownloadByteArray();                
+                //List<CaptureEntry> entriesList = new List<CaptureEntry>(entries);
+                try
+                {                    
+                    this.ThumbnailView.DataSource = entries.ToList();
+                    this.ThumbnailView.DataBind();
+                }
+                catch (DataServiceQueryException ex)
+                {
+                    this.ErrorLbl.Visible = true;
+                    this.ErrorLbl.Text = "No data was found";   
+                }
             }
-        }
+        }        
 
         private Boolean isValid(string url)
         {
@@ -87,6 +104,13 @@ namespace SyncWebsite
                 return false;
             else
                 return true;
+        }
+
+        protected void ThumbnailView_PageIndexChanging(object sender, DetailsViewPageEventArgs e)
+        {
+            this.ThumbnailView.DataSource = entries.ToList();
+            this.ThumbnailView.PageIndex = e.NewPageIndex;
+            this.ThumbnailView.DataBind();        
         }
     }
 }

@@ -6,14 +6,18 @@
         URL to search: <asp:TextBox ID="URLSearchText" runat="server"></asp:TextBox>
         <asp:Button ID="SearchSubmit" runat="server" Text="Search" 
             onclick="SearchSubmit_Click" />
+        <asp:Label ID="ErrorLbl" runat="server" Text="Label" visible="false" ForeColor="Red"></asp:Label>
         <asp:DetailsView ID="ThumbnailView" runat="server" Caption="Thumbnail data" 
             Height="250px" Width="276px" 
             AutoGenerateRows="False" BorderStyle="None" 
-            EmptyDataText="No capture exists for the requested URL" GridLines="Horizontal">
+            EmptyDataText="No capture exists for the requested URL" 
+            GridLines="Horizontal" AllowPaging="True" 
+            onpageindexchanging="ThumbnailView_PageIndexChanging">
             <Fields>
-                <asp:ImageField HeaderText="Thumbnail:" DataImageUrlField="blobUri">
+                <asp:ImageField  HeaderText="Thumbnail:" DataImageUrlField="blobUri" DataImageUrlFormatString="DisplayImage.aspx?id={0}">
+                <ControlStyle Width="150px" height="150px" />
                 </asp:ImageField>
-                <asp:BoundField DataField="url" HeaderText="Webpage URL:" />
+                <asp:BoundField DataField="blobUri" HeaderText="Webpage URL:" />
                 <asp:BoundField DataField="WorkerId" HeaderText="Responsible server name:" />
                 <asp:BoundField DataField="StartTime" HeaderText="Date taken:" />
             </Fields>
