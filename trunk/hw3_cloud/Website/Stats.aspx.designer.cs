@@ -7,36 +7,45 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace WebRole1 {
+namespace Website {
     
     
-    public partial class SiteMaster {
+    public partial class Stats {
         
         /// <summary>
-        /// HeadContent control.
+        /// WorkersCount control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.ContentPlaceHolder HeadContent;
+        protected global::System.Web.UI.WebControls.Label WorkersCount;
         
         /// <summary>
-        /// NavigationMenu control.
+        /// CapturesCount control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Menu NavigationMenu;
+        protected global::System.Web.UI.WebControls.Label CapturesCount;
         
         /// <summary>
-        /// MainContent control.
+        /// PendingURIs control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.ContentPlaceHolder MainContent;
+        protected global::System.Web.UI.WebControls.Label PendingURIs;
+        
+        /// <summary>
+        /// WorkersStats control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.GridView WorkersStats;
     }
 }

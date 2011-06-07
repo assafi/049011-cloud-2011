@@ -137,7 +137,7 @@ namespace WorkerRole1
 
         private int workersCount()
         {
-            return _workersTable.count();
+            return _workersTable.workersCount();
         }
 
         private CloudBlob uploadCapture(string tempFilePath)
@@ -177,9 +177,6 @@ namespace WorkerRole1
                 }
                  return queue;
             }
-
-        
-        
 
         private CloudBlobContainer initStorage(CloudStorageAccount storageAccount)
         {            
@@ -266,6 +263,12 @@ namespace WorkerRole1
             });
 
             return base.OnStart();
+        }
+
+        public override void OnStop()
+        {
+            _workersTable.removeWorder(_wid);
+            base.OnStop();
         }
     }
 }
