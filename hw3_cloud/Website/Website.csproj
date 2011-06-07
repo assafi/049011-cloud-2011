@@ -67,6 +67,7 @@
     <Content Include="CutyCapt\CutyCapt.exe" />
     <Content Include="DisplayImage.aspx" />
     <Content Include="LogsPage.aspx" />
+    <Content Include="Stats.aspx" />
     <Content Include="Styles\Site.css" />
     <Content Include="Default.aspx" />
     <Content Include="Global.asax" />
@@ -149,6 +150,13 @@
     </Compile>
     <Compile Include="Site.Master.designer.cs">
       <DependentUpon>Site.Master</DependentUpon>
+    </Compile>
+    <Compile Include="Stats.aspx.cs">
+      <DependentUpon>Stats.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Stats.aspx.designer.cs">
+      <DependentUpon>Stats.aspx</DependentUpon>
     </Compile>
     <Compile Include="UploadPage.aspx.cs">
       <DependentUpon>UploadPage.aspx</DependentUpon>

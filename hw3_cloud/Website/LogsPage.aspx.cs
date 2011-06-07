@@ -15,7 +15,7 @@ namespace SyncWebsite
 {
     public partial class LogsPage : System.Web.UI.Page
     {
-        private static CaptureTableService context;
+        private static CaptureTableService captureTableContext;
         private static CloudBlobContainer container;
         private static IEnumerable<CaptureEntry> entries = null;
 
@@ -30,7 +30,7 @@ namespace SyncWebsite
                      */ 
                     var machineName = System.Environment.MachineName.ToLower();
                     var account = CloudStorageAccount.FromConfigurationSetting("DataConnectionString");
-                    context = new CaptureTableService(account.TableEndpoint.ToString(), account.Credentials);
+                    captureTableContext = CaptureTableService.initCaptureTable(account);
                     CloudBlobClient blob = new CloudBlobClient(account.BlobEndpoint, account.Credentials);
                     container = blob.GetContainerReference("thumbnails");
                 }
@@ -68,13 +68,13 @@ namespace SyncWebsite
 
         protected void SearchSubmit_Click(object sender, EventArgs e)
         {
-            this.ErrorLbl.Visible = false;
+            this.ErrorLbl.Visible = (Boolean)false;
             string searchedURL = this.URLSearchText.Text;
             if (isValid(searchedURL))
             {
                 //IEnumerable<CaptureEntry> entries = from capture in context.Captures where capture.url == searchedURL select capture;
                 entries = 
-                    context.getAllCapturesByUrl(searchedURL);
+                    captureTableContext.getAllCapturesByUrl(searchedURL);
                 /* CaptureEntry selectedCapture =
                     (from capture in context.Captures
                      where capture.url == searchedURL

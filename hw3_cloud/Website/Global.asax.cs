@@ -9,6 +9,7 @@ using Microsoft.WindowsAzure;
 using Microsoft.WindowsAzure.Diagnostics;
 using Microsoft.WindowsAzure.ServiceRuntime;
 using Microsoft.WindowsAzure.StorageClient;
+using SyncLibrary;
 
 
 namespace WebRole1
@@ -22,7 +23,13 @@ namespace WebRole1
                 {
                     configSetter(RoleEnvironment.GetConfigurationSettingValue(configName));
                 });
-
+           /*
+            * Intialize only once
+            */
+            var machineName = System.Environment.MachineName.ToLower();
+            var account = CloudStorageAccount.FromConfigurationSetting("DataConnectionString");
+            CaptureTableService.initCaptureTable(account);
+            WorkerTableService.initWorkersTable(account);
         }
 
         void Application_End(object sender, EventArgs e)
