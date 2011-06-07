@@ -34,10 +34,22 @@ namespace SyncLibrary
             this.SaveChanges();
         }
 
-        public int count()
+        public int workersCount()
         {
             IEnumerable<WorkerEntry> workers = from w in Workers select w;
-            return workers.Count();
+            return workers.Count<WorkerEntry>();
+        }
+
+        public IEnumerable<WorkerEntry> workers()
+        {
+            return (from w in Workers select w);
+        }
+
+        public static WorkerTableService initWorkersTable(CloudStorageAccount account)
+        {
+            CloudTableClient.CreateTablesFromModel(typeof(WorkerTableService),
+                                                  account.TableEndpoint.AbsoluteUri, account.Credentials);
+           return new WorkerTableService(account.TableEndpoint.ToString(), account.Credentials);
         }
     }
 }
