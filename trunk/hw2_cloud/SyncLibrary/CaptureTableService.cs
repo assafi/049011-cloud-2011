@@ -14,19 +14,32 @@ namespace SyncLibrary
         
         public IQueryable<CaptureEntry> Captures {
             get {
-                return CreateQuery<CaptureEntry>("Captures");
+                return CreateQuery<CaptureEntry>("captures");
             }
         }
 
         public CaptureTableService(string baseAddress, StorageCredentials credentials)
             : base(baseAddress, credentials) {
                 base.IgnoreResourceNotFoundException = true;
+
+            /*
+                foreach (var c in Captures)
+                {
+                    DeleteObject(c);
+                }
+                SaveChanges();
+             */
         }
         
         public string addCaptureEntry(string url)
         {
             string guid = Guid.NewGuid().ToString();
-            this.AddObject("Captures", new CaptureEntry { id = guid, url = url, done = false });
+            CaptureEntry e = new CaptureEntry { id = guid, url = url, done = false };
+            e.WorkerId = string.Empty;
+            e.StartTime = DateTime.Now;
+            e.EndTime = DateTime.Now;
+            e.blobUri = string.Empty;
+            this.AddObject("captures", e);
             this.SaveChanges();
             return guid;
         }
@@ -35,7 +48,10 @@ namespace SyncLibrary
         {
             CaptureEntry captureEntry = (from capture in Captures where capture.id == taskId select capture).First();
             captureEntry.StartTime = DateTime.Now;
+            captureEntry.EndTime = DateTime.Now;
+            captureEntry.done = false;
             captureEntry.WorkerId = wid;
+            captureEntry.blobUri = string.Empty;
             this.UpdateObject(captureEntry);
             this.SaveChanges();
             return captureEntry.url;
