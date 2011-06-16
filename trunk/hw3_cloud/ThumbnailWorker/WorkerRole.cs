@@ -25,12 +25,13 @@ namespace WorkerRole1
 
         private string captureSite(string url) 
         {
-            string outputPath = RoleEnvironment.GetLocalResource("LocalOutput").RootPath; // "C:\\Users\\assafi.TD-CSF\\Documents\\Visual Studio 2010\\Projects\\hw3_cloud";
-            string tempFilePath = Path.Combine(outputPath, ExtractDomainNameFromURL(url) + ".png"); //  TODO: use example filename generator
+            string outputPath = Environment.GetEnvironmentVariable("RoleRoot") + @"\approot";
+            string tempFilePath = Path.Combine(outputPath, ExtractDomainNameFromURL(url).Replace('.', '_') + ".png"); //  TODO: use example filename generator
 
             Trace.TraceInformation("Starting capture on url " + url + ", output: " + tempFilePath);
-            Trace.TraceInformation("Roleroot : " + Environment.GetEnvironmentVariable("RoleRoot") + @"\approot\CutyCapt.exe");
+            Trace.TraceInformation("Roleroot : " + Environment.GetEnvironmentVariable("RoleRoot") + @"\");
             Trace.TraceInformation("Output dir: " + outputPath);
+            Trace.TraceInformation("Output file: " + tempFilePath);
             
             var proc = new Process()
             {
@@ -86,9 +87,6 @@ namespace WorkerRole1
                     List<CloudQueueMessage> fetchedMessages = _queue.GetMessages(numberOfMsg2Fetch)
                         .ToList<CloudQueueMessage>();
 
-                    Trace.TraceInformation("Worker " + _wid + " fetched " + fetchedMessages.Count +
-                        " messages from the queue.");
-
                     if (fetchedMessages.Count == 0 ||
                         (fetchedMessages.Count == 1 && fetchedMessages.First() == null))
                     {
@@ -96,9 +94,16 @@ namespace WorkerRole1
                     }
                     else
                     {
+                        Trace.TraceInformation("Worker " + _wid + " fetched " + fetchedMessages.Count +
+                            " messages from the queue.");
                         fetchedMessages.ForEach(processMessage);
                     }
                 }
+            }
+            catch (Exception e)
+            {
+                Trace.TraceError("Fatal error occured: " + e.Message);
+                Trace.TraceError("Trace: " + e.StackTrace);
             }
             finally
             {
@@ -110,7 +115,7 @@ namespace WorkerRole1
         {
             if (msg != null)
             {
-                if (msg.DequeueCount < 3)
+                if (msg.DequeueCount < 3) // 3 Triels before discarding the message
                 {
                     string taskId = msg.AsString;
 
@@ -143,6 +148,7 @@ namespace WorkerRole1
         private CloudBlob uploadCapture(string tempFilePath)
         {
             FileInfo file = new FileInfo(tempFilePath);
+            Trace.TraceInformation("Uploading capture... " + file.Name);
             string blobUri = Guid.NewGuid().ToString() + "_" + file.Name;
             var blob = _blobContainer.GetBlobReference(blobUri);
             blob.Properties.ContentType = "image/png";
@@ -175,6 +181,7 @@ namespace WorkerRole1
                         throw;
                     }
                 }
+                 Trace.TraceInformation("Queue initializaed");
                  return queue;
             }
 
@@ -261,6 +268,26 @@ namespace WorkerRole1
                     }
                 };
             });
+
+            /*
+             * Debug
+             */
+
+            DiagnosticMonitorConfiguration dmc = DiagnosticMonitor.GetDefaultInitialConfiguration();
+
+            // Transfer logs to storage every minute
+
+            dmc.Logs.ScheduledTransferPeriod = TimeSpan.FromMinutes(10);
+
+            dmc.Logs.BufferQuotaInMB = 10;
+
+            // Transfer verbose, critical, etc. logs
+
+            dmc.Logs.ScheduledTransferLogLevelFilter = LogLevel.Verbose;
+
+            // Start up the diagnostic manager with the given configuration
+
+            DiagnosticMonitor.Start("Microsoft.WindowsAzure.Plugins.Diagnostics.ConnectionString", dmc);
 
             return base.OnStart();
         }

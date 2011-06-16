@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Website", "Website\Website.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SyncLibrary", "..\hw2_cloud\SyncLibrary\SyncLibrary.csproj", "{65BDA1C1-8BD1-4B36-A971-603205217BA2}"
 EndProject
+Project("{CC5FD16D-436D-48AD-A40C-5A424C6E3E79}") = "CaptureServiceBackend", "CaptureServiceBackend\CaptureServiceBackend.ccproj", "{8DB3593B-0BF0-4E53-9737-20730916CDB8}"
+EndProject
 Global
 	GlobalSection(SubversionScc) = preSolution
 		Svn-Managed = True
@@ -63,6 +65,16 @@ Global
 		{65BDA1C1-8BD1-4B36-A971-603205217BA2}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{65BDA1C1-8BD1-4B36-A971-603205217BA2}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{65BDA1C1-8BD1-4B36-A971-603205217BA2}.Release|Win32.ActiveCfg = Release|Any CPU
+		{8DB3593B-0BF0-4E53-9737-20730916CDB8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8DB3593B-0BF0-4E53-9737-20730916CDB8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8DB3593B-0BF0-4E53-9737-20730916CDB8}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{8DB3593B-0BF0-4E53-9737-20730916CDB8}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{8DB3593B-0BF0-4E53-9737-20730916CDB8}.Debug|Win32.ActiveCfg = Debug|Any CPU
+		{8DB3593B-0BF0-4E53-9737-20730916CDB8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8DB3593B-0BF0-4E53-9737-20730916CDB8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8DB3593B-0BF0-4E53-9737-20730916CDB8}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{8DB3593B-0BF0-4E53-9737-20730916CDB8}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{8DB3593B-0BF0-4E53-9737-20730916CDB8}.Release|Win32.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

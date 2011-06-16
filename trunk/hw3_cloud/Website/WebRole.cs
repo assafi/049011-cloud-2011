@@ -62,9 +62,6 @@ namespace WebRole1
             _queue = initQueue(storageAccount);
             _captureTable = initCaptureTable(storageAccount);           
 
-
-
-
             return base.OnStart();
         }
 
