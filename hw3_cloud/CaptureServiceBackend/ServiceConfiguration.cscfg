@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ServiceConfiguration serviceName="CaptureServiceBackend" xmlns="http://schemas.microsoft.com/ServiceHosting/2008/10/ServiceConfiguration" osFamily="1" osVersion="*">
+  <Role name="ThumbnailWorker">
+    <Instances count="2" />
+    <ConfigurationSettings>
+      <Setting name="Microsoft.WindowsAzure.Plugins.Diagnostics.ConnectionString" value="DefaultEndpointsProtocol=https;AccountName=assafoshritstorage;AccountKey=e/N+3jTKS8FVCjUbHfyEPRHevGwSZjyQTv+G1OOQyj2psOfBjllnDR5IixQvshWFUvsXPDmuLw/HrmklCNwtiw==" />
+      <Setting name="DataConnectionString" value="DefaultEndpointsProtocol=http;AccountName=assafoshritstorage;AccountKey=e/N+3jTKS8FVCjUbHfyEPRHevGwSZjyQTv+G1OOQyj2psOfBjllnDR5IixQvshWFUvsXPDmuLw/HrmklCNwtiw==" />
+    </ConfigurationSettings>
+  </Role>
+</ServiceConfiguration>

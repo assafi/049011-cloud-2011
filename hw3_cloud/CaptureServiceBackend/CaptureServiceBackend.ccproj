@@ -4,13 +4,13 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>1.3.0</ProductVersion>
-    <ProjectGuid>{4274c596-9ded-4aa6-9a33-cc2496074ec0}</ProjectGuid>
+    <ProjectGuid>{8db3593b-0bf0-4e53-9737-20730916cdb8}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>WCS</RootNamespace>
-    <AssemblyName>WCS</AssemblyName>
+    <RootNamespace>CaptureServiceBackend</RootNamespace>
+    <AssemblyName>CaptureServiceBackend</AssemblyName>
     <StartDevelopmentStorage>True</StartDevelopmentStorage>
-    <Name>WCS</Name>
+    <Name>CaptureServiceBackend</Name>
     <SccProjectName>Svn</SccProjectName>
     <SccProvider>SubversionScc</SccProvider>
     <SccAuxPath>Svn</SccAuxPath>
@@ -39,12 +39,12 @@
     <ServiceConfiguration Include="ServiceConfiguration.cscfg" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Website\Website.csproj">
-      <Name>Website</Name>
-      <Project>{a406ba26-0cab-480b-a5b3-d5c49e63b1a9}</Project>
+    <ProjectReference Include="..\ThumbnailWorker\ThumbnailWorker.csproj">
+      <Name>ThumbnailWorker</Name>
+      <Project>{d90308dd-d0f2-4520-aa38-2dbce0e50dba}</Project>
       <Private>True</Private>
-      <RoleType>Web</RoleType>
-      <RoleName>Website</RoleName>
+      <RoleType>Worker</RoleType>
+      <RoleName>ThumbnailWorker</RoleName>
     </ProjectReference>
   </ItemGroup>
   <!-- Import the target files for this project template -->
