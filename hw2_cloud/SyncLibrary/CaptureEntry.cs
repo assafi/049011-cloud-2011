@@ -8,6 +8,7 @@ using Microsoft.WindowsAzure;
 
 namespace SyncLibrary
 {
+    [Serializable]
     public class CaptureEntry : Microsoft.WindowsAzure.StorageClient.TableServiceEntity
     {
         public string id { get; set; } //The id of the capture request
@@ -20,7 +21,7 @@ namespace SyncLibrary
         
         public CaptureEntry()
         {
-            PartitionKey = "a";
+            PartitionKey = "c";
             RowKey = string.Format("{0:10}_{1}", DateTime.MaxValue.Ticks - DateTime.Now.Ticks, Guid.NewGuid());
         }
 

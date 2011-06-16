@@ -13,17 +13,26 @@ namespace SyncLibrary
         {
             get
             {
-                return this.CreateQuery<WorkerEntry>("Workers");
+                return this.CreateQuery<WorkerEntry>("workers");
             }
         }
 
         public WorkerTableService(string baseAddress, StorageCredentials credentials)
-            : base(baseAddress, credentials) { }
+            : base(baseAddress, credentials) {
+
+            /*
+                foreach (var w in Workers)
+                {
+                    DeleteObject(w);
+                }
+                SaveChanges();
+             */
+        }
 
         public void addWorker(string wid)
         {
             string id = Guid.NewGuid().ToString();
-            this.AddObject("Workers", new WorkerEntry { wid = wid });
+            this.AddObject("workers", new WorkerEntry { wid = wid });
             this.SaveChanges();
         }
 
